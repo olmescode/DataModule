@@ -9,9 +9,9 @@ local DataModule = {}
 -- CRUD (create, read, update, and delete)
 
 -- Retrieve data
-function DataModule.retrieveData(userId, key)
+function DataModule.retrieveData(userId, dataKey)
 	assert(type(userId) == "number", "userId should be a number")
-	assert(type(key) == "string", "value should be a string")
+	assert(type(dataKey) == "string", "value should be a string")
 
 	local data = CachedData.data[userId]
 	if not data then
@@ -20,19 +20,19 @@ function DataModule.retrieveData(userId, key)
 	end
 	
 	for dataStore, data in pairs(data) do
-		if data[key] then
-			return data[key]
+		if data[dataKey] then
+			return data[dataKey]
 		end
 	end
 	-- Value not found in cache
-	warn(string.format("User with ID %d does not have %s in the cache", userId, key))
+	warn(string.format("User with ID %d does not have %s in the cache", userId, dataKey))
 	return false
 end
 
 -- Update data
-function DataModule.updateData(userId, key, newValue)
+function DataModule.updateData(userId, dataKey, newValue)
 	assert(type(userId) == "number", "userId should be a number")
-	assert(type(key) == "string", "value should be a string")
+	assert(type(dataKey) == "string", "value should be a string")
 	assert(type(newValue) ~= "nil", "newValue should be provided")
 	
 	local data = CachedData.data[userId]
@@ -42,45 +42,45 @@ function DataModule.updateData(userId, key, newValue)
 	end
 
 	for dataStore, data in pairs(data) do
-		if data[key] then
-			data[key] = newValue
+		if data[dataKey] then
+			data[dataKey] = newValue
 			return true
 		end
 	end
 	-- Value not found in cache
-	warn(string.format("Key %s does not exist in the data for user %d", key, userId))
+	warn(string.format("Key %s does not exist in the data for user %d", dataKey, userId))
 	return false
 end
 
 -- Set new data
-function DataModule.satData(userId, dataStore, key, value)
+function DataModule.satData(userId, dataStore, dataKey, value)
 	assert(type(userId) == "number", "userId should be a number")
 	assert(type(dataStore) == "string", "dataStore should be a string")
-	assert(type(key) == "string", "key should be a string")
+	assert(type(dataKey) == "string", "key should be a string")
 	assert(type(value) ~= "nil", "value should be provided")
 	
 	local playerData = CachedData.data[userId]
 	if playerData then
 		if playerData[dataStore] then
-			playerData[dataStore][key] = value
+			playerData[dataStore][dataKey] = value
 		else
 			playerData[dataStore] = {
-				[key] = value
+				[dataKey] = value
 			}
 		end
 	else
 		CachedData.data[userId] = {
 			[dataStore] = {
-				[key] = value
+				[dataKey] = value
 			}
 		}
 	end
 end
 
 -- Delete data
-function DataModule.deleteData(userId, key)
+function DataModule.deleteData(userId, dataKey)
 	assert(type(userId) == "number", "userId should be a number")
-	assert(type(key) == "string", "key should be a string")
+	assert(type(dataKey) == "string", "key should be a string")
 	
 	local data = CachedData.data[userId]
 	if not data then
@@ -89,8 +89,8 @@ function DataModule.deleteData(userId, key)
 	end
 	
 	for dataStore, data in pairs(data) do
-		if data[key] then
-			data[key] = nil
+		if data[dataKey] then
+			data[dataKey] = nil
 			return true
 		end
 	end

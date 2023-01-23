@@ -19,6 +19,7 @@ local function loadData(player, DataStores)
 			
 			CachedData[playerDataStore] = playerData
 		else
+			warn(string.format("User %d does not have registered data in DataStore %s", player.UserId, playerDataStore))
 			CachedData[playerDataStore] = DataStores[playerDataStore]
 		end
 	end

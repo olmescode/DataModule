@@ -32,10 +32,11 @@ Players.PlayerAdded:Connect(function(player)
 	print(items)
 	print(playTime)
 	print(banned)
+	print(DataModule.retrieveData(player.UserId, "HalloweenCandies"))
 	
 	task.wait(5)
-	local updatedPlayTime = DataModule.updateData(player.UserId, "Playtime", 200)
-	print(DataModule.retrieveData(player.UserId, "Playtime"))
+	local updatedPlayTime = DataModule.updateData(player.UserId, "HalloweenCandies", 200)
+	print(DataModule.retrieveData(player.UserId, "HalloweenCandies"))
 end)
 
 Players.PlayerRemoving:Connect(function(player)

@@ -25,8 +25,7 @@ function DataManger.loadDataAsync(dataStore, userId)
 		--print(dataStoreKeyInfo.Version)
 		--print(dataStoreKeyInfo.CreatedTime)
 		--print(dataStoreKeyInfo.UpdatedTime)
-		if success and result == nil and dataStoreKeyInfo == nil then 
-			warn("User does not have registered a data in this DataStore")
+		if success and result == nil and dataStoreKeyInfo == nil then
 			return nil
 		end
 		
