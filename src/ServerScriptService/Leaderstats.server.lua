@@ -2,8 +2,8 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local DataStoreService = game:GetService("DataStoreService")
-local dataStore = DataStoreService:GetDataStore("ExampleDataStore3") -- Global DataStore
-local orderedDataStore = DataStoreService:GetOrderedDataStore("ExampleDataStore3") -- OrdererDataStore
+local dataStore = DataStoreService:GetDataStore("ExampleDataStore1") -- Global DataStore
+local orderedDataStore = DataStoreService:GetOrderedDataStore("ExampleDataStore1") -- OrdererDataStore
 
 local ServerStorage = game:GetService("ServerStorage")
 local ModuleData = require(ServerStorage:WaitForChild("ModuleData"))

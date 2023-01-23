@@ -1,24 +1,21 @@
 local Players = game:GetService("Players")
 local DataStoreService = game:GetService("DataStoreService")
 
-local ModuleData = {}
+local DataManger = {}
 
 -- Function to yield if there's a lot of budget on the queue
 local function waitForRequestBudget(requestType)
-	local currentBudget = DataStoreService:GetRequestBudgetForRequestType(requestType)	
-	while currentBudget < 1 do
-		currentBudget = DataStoreService:GetRequestBudgetForRequestType(requestType)
+	while DataStoreService:GetRequestBudgetForRequestType(requestType) < 1 do
 		task.wait(6)
 	end
 end
 
 -- Getting data
-function ModuleData.loadDataAsync(dataStore, userId)
+function DataManger.loadDataAsync(dataStore, userId)
 	local tries = 0
 	local success = nil
 	local result = nil
 	local dataStoreKeyInfo = nil
-	local session = nil
 	local lastSession = nil
 
 	repeat
@@ -28,12 +25,14 @@ function ModuleData.loadDataAsync(dataStore, userId)
 		--print(dataStoreKeyInfo.Version)
 		--print(dataStoreKeyInfo.CreatedTime)
 		--print(dataStoreKeyInfo.UpdatedTime)
-		if success and result == nil and dataStoreKeyInfo == nil then return end
-
+		if success and result == nil and dataStoreKeyInfo == nil then 
+			warn("User does not have registered a data in this DataStore")
+			return nil
+		end
+		
 		if dataStoreKeyInfo then
-			session = os.time()
-			lastSession = (session - dataStoreKeyInfo.UpdatedTime/1000)
-			-- If lastSession is less than 30 seconds it will yiel
+			lastSession = os.time() - (dataStoreKeyInfo.UpdatedTime/1000)
+			-- Wait if the data was updated less than 30 seconds ago
 			if lastSession < 30 then
 				task.wait(3)
 			end
@@ -49,7 +48,7 @@ function ModuleData.loadDataAsync(dataStore, userId)
 end
 
 -- Saving data
-function ModuleData.saveDataAsync(dataStore, userId, playerData)
+function DataManger.saveDataAsync(dataStore, userId, playerData)
 	local tries = 0
 	local success = nil
 	local result = nil
@@ -66,8 +65,8 @@ function ModuleData.saveDataAsync(dataStore, userId, playerData)
 	end
 end
 
--- Actualizando los datos
-function ModuleData.updateDataAsync(dataStore, userId, playerData)
+-- Updating data
+function DataManger.updateDataAsync(dataStore, userId, playerData)
 	local tries = 0
 	local success = nil
 	local result = nil
@@ -91,7 +90,7 @@ function ModuleData.updateDataAsync(dataStore, userId, playerData)
 end
 
 -- Ordered Data Stores
-function ModuleData.saveOrderedDataAsync(orderedDataStore, userId, playerData)
+function DataManger.saveOrderedDataAsync(orderedDataStore, userId, playerData)
 	local tries = 0
 	local success = nil
 	local result = nil
@@ -110,8 +109,8 @@ function ModuleData.saveOrderedDataAsync(orderedDataStore, userId, playerData)
 	end
 end
 
--- Removiendo los datos
-function ModuleData.removeData(dataStore, userId)
+-- Removing data
+function DataManger.removeData(dataStore, userId)
 	local tries = 0
 	local success = nil
 	local result = nil
@@ -127,4 +126,4 @@ function ModuleData.removeData(dataStore, userId)
 	end
 end
 
-return ModuleData
+return DataManger
