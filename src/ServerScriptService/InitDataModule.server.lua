@@ -25,18 +25,6 @@ local DataStores = {
 
 Players.PlayerAdded:Connect(function(player)
 	DataModule.loadDataAsync(player, DataStores)
-	task.wait(10)
-	local banned = DataModule.retrieveData(player.UserId, "Banned")
-	local playTime = DataModule.retrieveData(player.UserId, "Playtime")
-	local items = DataModule.retrieveData(player.UserId, "Items")
-	print(items)
-	print(playTime)
-	print(banned)
-	print(DataModule.retrieveData(player.UserId, "HalloweenCandies"))
-	
-	task.wait(5)
-	local updatedPlayTime = DataModule.updateData(player.UserId, "HalloweenCandies", 200)
-	print(DataModule.retrieveData(player.UserId, "HalloweenCandies"))
 end)
 
 Players.PlayerRemoving:Connect(function(player)

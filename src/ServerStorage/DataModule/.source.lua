@@ -5,6 +5,8 @@ local loadDataAsync = require(script.Api.loadDataAsync)
 local DataManager = require(script.Modules.DataManger)
 local CachedData = require(script.Components.CachedData)
 
+local playerDataRemote = script.Remotes.playerDataRemote
+
 local DataModule = {}
 -- CRUD (create, read, update, and delete)
 
@@ -30,12 +32,14 @@ function DataModule.retrieveData(userId, dataKey)
 end
 
 -- Update data
-function DataModule.updateData(userId, dataKey, newValue)
+function DataModule.updateData(userId, dataKey, dataValue)
 	assert(type(userId) == "number", "userId should be a number")
 	assert(type(dataKey) == "string", "value should be a string")
-	assert(type(newValue) ~= "nil", "newValue should be provided")
+	assert(type(dataValue) ~= "nil", "newValue should be provided")
 	
 	local data = CachedData.data[userId]
+	local callback = CachedData.callbacks[dataKey]
+	
 	if not data then
 		warn(string.format("User with ID %d not found in cached data", userId))
 		return
@@ -43,35 +47,41 @@ function DataModule.updateData(userId, dataKey, newValue)
 
 	for dataStore, data in pairs(data) do
 		if data[dataKey] then
-			data[dataKey] = newValue
+			data[dataKey] = dataValue
+			if callback then
+				callback(userId, dataKey, dataValue)
+			end
 			return true
 		end
 	end
+	
+	--CachedData.callbacks.onUpdate(userId, dataKey, dataValue)
+	
 	-- Value not found in cache
 	warn(string.format("Key %s does not exist in the data for user %d", dataKey, userId))
 	return false
 end
 
 -- Set new data
-function DataModule.satData(userId, dataStore, dataKey, value)
+function DataModule.satData(userId, dataStore, dataKey, dataValue)
 	assert(type(userId) == "number", "userId should be a number")
 	assert(type(dataStore) == "string", "dataStore should be a string")
 	assert(type(dataKey) == "string", "key should be a string")
-	assert(type(value) ~= "nil", "value should be provided")
+	assert(type(dataValue) ~= "nil", "value should be provided")
 	
 	local playerData = CachedData.data[userId]
 	if playerData then
 		if playerData[dataStore] then
-			playerData[dataStore][dataKey] = value
+			playerData[dataStore][dataKey] = dataValue
 		else
 			playerData[dataStore] = {
-				[dataKey] = value
+				[dataKey] = dataValue
 			}
 		end
 	else
 		CachedData.data[userId] = {
 			[dataStore] = {
-				[dataKey] = value
+				[dataKey] = dataValue
 			}
 		}
 	end
@@ -112,6 +122,8 @@ function DataModule.loadDataAsync(player, DataStores)
 	end
 	
 	CachedData.data[player.UserId] = playerData
+	
+	playerDataRemote:FireClient(player, playerData)
 end
 
 function DataModule.clearData(player)
