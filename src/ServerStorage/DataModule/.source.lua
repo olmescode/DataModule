@@ -1,11 +1,10 @@
 print("Required ModuleData")
 local RunService = game:GetService("RunService")
 
-local loadDataAsync = require(script.Api.loadDataAsync)
-local DataManager = require(script.Modules.DataManger)
 local CachedData = require(script.Components.CachedData)
-
-local playerDataRemote = script.Remotes.playerDataRemote
+local onPlayerAdded = require(script.Api.onPlayerAdded)
+local onPlayerRemoved = require(script.Api.onPlayerRemoved)
+local callbacks = require(script.callbacks)
 
 local DataModule = {}
 -- CRUD (create, read, update, and delete)
@@ -38,7 +37,7 @@ function DataModule.updateData(userId, dataKey, dataValue)
 	assert(type(dataValue) ~= "nil", "newValue should be provided")
 	
 	local data = CachedData.data[userId]
-	local callback = CachedData.callbacks[dataKey]
+	local callback = callbacks[dataKey]
 	
 	if not data then
 		warn(string.format("User with ID %d not found in cached data", userId))
@@ -48,6 +47,9 @@ function DataModule.updateData(userId, dataKey, dataValue)
 	for dataStore, data in pairs(data) do
 		if data[dataKey] then
 			data[dataKey] = dataValue
+			if callbacks.updateDataCallback.isCallbackSet() then
+				callbacks.updateDataCallback.fireCallback(userId, dataKey, dataValue)
+			end
 			if callback then
 				callback(userId, dataKey, dataValue)
 			end
@@ -78,12 +80,18 @@ function DataModule.satData(userId, dataStore, dataKey, dataValue)
 				[dataKey] = dataValue
 			}
 		end
+		if callbacks.setDataCallback.isCallbackSet() then
+			callbacks.setDataCallback.fireCallback(userId, dataStore, dataKey, dataValue)
+		end
 	else
 		CachedData.data[userId] = {
 			[dataStore] = {
 				[dataKey] = dataValue
 			}
 		}
+		if callbacks.setDataCallback.isCallbackSet() then
+			callbacks.setDataCallback.fireCallback(userId, dataStore, dataKey, dataValue)
+		end
 	end
 end
 
@@ -101,6 +109,9 @@ function DataModule.deleteData(userId, dataKey)
 	for dataStore, data in pairs(data) do
 		if data[dataKey] then
 			data[dataKey] = nil
+			if callbacks.deleteDataCallvack.isCallbackSet() then
+				callbacks.deleteDataCallvack.fireCallback(userId, dataKey)
+			end
 			return true
 		end
 	end
@@ -109,26 +120,25 @@ function DataModule.deleteData(userId, dataKey)
 	return false
 end
 
-function DataModule.loadDataAsync(player, DataStores)
-	local playerData = nil
-	
-	local success, result = pcall(function()
-		playerData = loadDataAsync(player, DataStores)
-		
-	end)
-	if not success then
-		warn(string.format("Failed to save %d's data: %s", player.UserId, result))
-		return
-	end
-	
-	CachedData.data[player.UserId] = playerData
-	
-	playerDataRemote:FireClient(player, playerData)
+function DataModule.onUpdateData(func)
+	--callbacks.addCallback(dataKey, func)
+	callbacks.updateDataCallback.setCallback(func)
 end
 
-function DataModule.clearData(player)
-	CachedData.clearCache(player.UserId)
-	CachedData.data[player.UserId] = nil
+function DataModule.onSetData(func)
+	callbacks.setDataCallback.setCallback(func)
+end
+
+function DataModule.onDeleteData(func)
+	callbacks.deleteDataCallvack.setCallback(func)
+end
+
+function DataModule.loadDataAsync(dataStore, player, data)
+	onPlayerAdded(dataStore, player, data, CachedData)(player)
+end
+
+function DataModule.saveDataAsync(player)
+	onPlayerRemoved(player, CachedData)(player)
 end
 
 function DataModule.init()

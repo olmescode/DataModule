@@ -14,18 +14,18 @@ end
 function DataManger.loadDataAsync(dataStore, userId)
 	local tries = 0
 	local success = nil
-	local result = nil
+	local playerData = nil
 	local dataStoreKeyInfo = nil
 	local lastSession = nil
 
 	repeat
 		tries = tries + 1
 		waitForRequestBudget(Enum.DataStoreRequestType.GetAsync)
-		success, result, dataStoreKeyInfo = pcall(dataStore.GetAsync, dataStore, userId)
+		success, playerData, dataStoreKeyInfo = pcall(dataStore.GetAsync, dataStore, userId)
 		--print(dataStoreKeyInfo.Version)
 		--print(dataStoreKeyInfo.CreatedTime)
 		--print(dataStoreKeyInfo.UpdatedTime)
-		if success and result == nil and dataStoreKeyInfo == nil then
+		if success and playerData == nil and dataStoreKeyInfo == nil then
 			return nil
 		end
 		
@@ -39,10 +39,9 @@ function DataManger.loadDataAsync(dataStore, userId)
 	until success and lastSession > 30 or not Players:GetPlayerByUserId(userId) or tries == 10
 
 	if success then
-		return result
+		return playerData
 	else
-		warn(string.format("Failed to save %d's data: %s", userId, result))
-		return false
+		warn(string.format("Failed to save %d's data: %s", userId))
 	end
 end
 
@@ -50,17 +49,16 @@ end
 function DataManger.saveDataAsync(dataStore, userId, playerData)
 	local tries = 0
 	local success = nil
-	local result = nil
+	local errorMessage = nil
 
 	repeat
 		tries = tries + 1
 		waitForRequestBudget(Enum.DataStoreRequestType.SetIncrementAsync)
-		success, result = pcall(dataStore.SetAsync, dataStore, userId, playerData)
+		success, errorMessage = pcall(dataStore.SetAsync, dataStore, userId, playerData)
 	until success or tries == 5
 
 	if not success then
-		warn(string.format("Failed to save %d's data: %s", userId, result))
-		return false
+		warn(string.format("Failed to save %d's data: %s", userId, errorMessage))
 	end
 end
 
@@ -68,7 +66,7 @@ end
 function DataManger.updateDataAsync(dataStore, userId, playerData)
 	local tries = 0
 	local success = nil
-	local result = nil
+	local errorMessage = nil
 
 	local function updatePlayerDataAsync(userId, data)
 		return dataStore:UpdateAsync(userId, function(oldData, DataStoreKeyInfo)
@@ -79,12 +77,11 @@ function DataManger.updateDataAsync(dataStore, userId, playerData)
 	repeat
 		tries = tries + 1
 		waitForRequestBudget(Enum.DataStoreRequestType.UpdateAsync)
-		success, result = pcall(updatePlayerDataAsync, userId, playerData)
+		success, errorMessage = pcall(updatePlayerDataAsync, userId, playerData)
 	until success or tries == 5
 
 	if not success then
-		warn(string.format("Failed to update %d's data: %s", userId, result))
-		return false
+		warn(string.format("Failed to update %d's data: %s", userId, errorMessage))
 	end
 end
 
@@ -92,19 +89,16 @@ end
 function DataManger.saveOrderedDataAsync(orderedDataStore, userId, playerData)
 	local tries = 0
 	local success = nil
-	local result = nil
+	local errorMessage = nil
 
 	repeat
 		tries = tries + 1
 		waitForRequestBudget(Enum.DataStoreRequestType.SetIncrementSortedAsync)
-		success, result = pcall(orderedDataStore.SetAsync, orderedDataStore, userId, playerData)
+		success, errorMessage = pcall(orderedDataStore.SetAsync, orderedDataStore, userId, playerData)
 	until success or tries == 5
-
-	if success then
-		return true
-	else
-		warn(string.format("Failed to save %d's data: %s", userId, result))
-		return false
+	
+	if not success then
+		warn(string.format("Failed to save %d's data: %s", userId, errorMessage))
 	end
 end
 
@@ -112,16 +106,13 @@ end
 function DataManger.removeData(dataStore, userId)
 	local tries = 0
 	local success = nil
-	local result = nil
+	local errorMessage = nil
 	repeat
-		success, result = pcall(dataStore.removeData, dataStore, userId)
+		success, errorMessage = pcall(dataStore.removeData, dataStore, userId)
 	until success or tries == 5
-
-	if success then
-		return true
-	else
-		warn(string.format("Failed to remove %d's data: %s", userId, result))
-		return false
+	
+	if not success then
+		warn(string.format("Failed to remove %d's data: %s", userId, errorMessage))
 	end
 end
 

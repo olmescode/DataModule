@@ -1,15 +1,18 @@
 local Players = game:GetService("Players")
-local ServerStorage = game:GetService("ServerStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local DataModule = require(ServerStorage:WaitForChild("DataModule"))
+local DataModule = require(ReplicatedStorage:WaitForChild("DataModule"))
+--local DataModuleAPI = require(DataModule)
+--local onPlayerAdded = require(DataModule.Api.onPlayerAdded)
+
 DataModule.init()
 
 local DataStores = {
-	ExampleDataStore5 = {
+	ExampleDataStore1 = {
 		Playtime = 10,
 		HalloweenCandies = 0
 	},
-	ExampleDataStore6 = {
+	ExampleDataStore2 = {
 		Event = "HalloweenEvent",
 		Banned = true,
 		Items = {
@@ -25,14 +28,15 @@ local DataStores = {
 
 Players.PlayerAdded:Connect(function(player)
 	for dataStore, data in pairs(DataStores) do
-		DataModule.loadDataAsync(dataStore, player, data)
+		DataModule.loadDataAsync(player, dataStore, data)
+		--onPlayerAdded(player, dataStore, data)(player)
 	end
 end)
 
 --Players.PlayerAdded:Connect(onPlayerAdded(player, DataStores))
 
 Players.PlayerRemoving:Connect(function(player)
-	DataModule.saveDataAsync(player)
+	DataModule.clearData(player)
 end)
 
 --[[
@@ -52,4 +56,3 @@ print(deletedData) -- Output: true
 
 --Make the function when player is leaving with updateAsyn, a function to force update using setAsync and bindtoclose
 --Set callbacks funtions on client and server
--- Agregar un set Enabled bc data can take a while to load, change in DataManager to playerKey to pass just a key instead player
