@@ -2,7 +2,6 @@ local DataStoreService = game:GetService("DataStoreService")
 
 local DataModule = script:FindFirstAncestor("DataModule")
 local DataManger = require(DataModule.Modules.DataManger)
---local CachedData = require(DataModule.Components.CachedData)
 
 local remotes = DataModule.Remotes
 
@@ -16,7 +15,7 @@ local function setExtraPlayerData(playerData, allPlayerData)
 	return playerData
 end
 
-local function onPlayerAdded(dataStore, player, data, CachedData)
+local function onPlayerAdded(CachedData)
 	--[[
 		Loads the data that the player has and sends that data
 		to the client
@@ -24,7 +23,7 @@ local function onPlayerAdded(dataStore, player, data, CachedData)
 		Parameters:
 		player: The player to send data to
 	]]
-	return function(player)
+	return function(dataStore, player, data)
 		local success, playerData = pcall(function()
 			-- Get Global DataStore
 			local dataStore = DataStoreService:GetDataStore(dataStore)

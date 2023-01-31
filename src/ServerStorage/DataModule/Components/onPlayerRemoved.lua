@@ -3,7 +3,7 @@ local DataStoreService = game:GetService("DataStoreService")
 local DataModule = script:FindFirstAncestor("DataModule")
 local DataManger = require(DataModule.Modules.DataManger)
 
-local function onPlayerRemoved(player, CachedData)
+local function onPlayerRemoved(CachedData)
 	--[[
 		Saves the player's data to the datastore and cleans up any data
 		associated with them

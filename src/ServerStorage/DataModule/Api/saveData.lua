@@ -1,31 +1,40 @@
 local DataStoreService = game:GetService("DataStoreService")
 
-local ModuleData = script:FindFirstAncestor("ModuleData")
-local DataManger = require(ModuleData.Modules.DataManger)
-local PlayerDataStores = require(ModuleData.PlayerDataStores)
+local DataModule = script:FindFirstAncestor("DataModule")
+local DataManger = require(DataModule.Modules.DataManger)
 
-local function saveData(player)
-	local playerData = player:FindFirstChild("PlayerData")
-	local DATA = {}
-	
-	for _playerDataStore, data in pairs(PlayerDataStores) do
-		-- Get Global DataStore
-		local playerDataStore = DataStoreService:GetDataStore(_playerDataStore)
+local function saveData(CachedData)
+	--[[
+		Forces to saves the player's data to the datastore without cleans up any data
+		associated with them
+
+		Parameters:
+		player: The player to save data for and clean up resources for
+	]]
+	return function(userId, dataKey)
+		local playerData = CachedData.data[userId]
 		
-		for _, instance in ipairs(playerData:GetChildren()) do
-			-- Get current attribute value
-			local dataStore = instance:GetAttribute("DataStore")
-			
-			if _playerDataStore == dataStore then
-				DATA[instance.Name] = instance.Value
-			end
-		end
-		if next(data) ~= nil then
-			DataManger.updateDataAsync(playerDataStore, player.UserId, DATA)
+		if not playerData then
+			warn(string.format("User with ID %d not found in cached data", userId))
+			return
 		end
 
-		for index, value in pairs(DATA) do
-			DATA[index] = nil
+		if playerData then
+			for dataStore, data in pairs(playerData) do
+				if data[dataKey] then
+					local success, errorMessage = pcall(function()
+						-- Get Global DataStore
+						local dataStore = DataStoreService:GetDataStore(dataStore)
+						return DataManger.updateDataAsync(dataStore, userId, data)
+					end)
+
+					if not success then
+						warn(errorMessage)
+					end
+					
+					return true
+				end
+			end
 		end
 	end
 end
