@@ -34,8 +34,9 @@ local function deleteData(CachedData)
 				return true
 			end
 		end
+		
 		-- Value not found in cache
-		warn(string.format("User with ID %d does not have any data in the cache", userId))
+		warn(string.format("Key %s does not exist in the data for user %d", dataKey, userId))
 		return false
 	end
 end

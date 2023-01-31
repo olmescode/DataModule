@@ -14,25 +14,24 @@ end
 
 local function onBindToClose(CachedData)
 	--[[
-		Saves the player's data to the datastore and cleans up any data
-		associated with them
-
-		Parameters:
-		player: The player to save data for and clean up resources for
+		Iterates through each userId and playerData in the CachedData of players
+		still in the game and save player data in a parallel manner which can
+		improve the performance and speed of the save operation
+		
+		The number of running threads is tracked using the 'numThreadsRunning' variable
+		when all the coroutines have finished, the main coroutine will be resumed
 	]]
 	return function()
 		if RunService:IsStudio() then
 			-- Avoid writing studio data to production and stalling test session closing
 			return
 		end
-		-- Reference for yielding and resuming later
+		-- Save the current coroutine for yielding and resuming later
 		local mainThread = coroutine.running()
 
-		-- Counts up for each new thread, down when the thread finishes. When 0 is reached,
-		-- the individual thread knows it's the last thread to finish and should resume the main thread
 		local numThreadsRunning = 0
 		
-		-- Calling this function later starts on a new thread because of coroutine.wrap
+		-- A coroutine that wraps the `savePlayerDataAsync` to call on a new thread
 		local startSaveThread = coroutine.wrap(function(userId, playerData)
 			-- Perform the save operation
 			local success, errorMessage = pcall(savePlayerDataAsync, userId, playerData)
@@ -40,16 +39,13 @@ local function onBindToClose(CachedData)
 				warn(string.format("Failed to save %d's data: %s", userId, errorMessage))
 			end
 
-			-- Thread finished, decrement counter
 			numThreadsRunning -= 1
-
+			
 			if numThreadsRunning == 0 then
-				-- This was the last thread to finish, resume main thread
 				coroutine.resume(mainThread)
 			end
 		end)
-		
-		-- Iterates over all the data of players still in the game that hasn't been saved
+
 		for userId, playerData in pairs(CachedData) do
 			numThreadsRunning += 1
 
@@ -57,9 +53,9 @@ local function onBindToClose(CachedData)
 			-- the save threads start because coroutine.wrap has built-in deferral on start
 			startSaveThread(userId, playerData)
 		end
-
+		
+		-- Stall shutdown until save threads finish
 		if numThreadsRunning > 0 then
-			-- Stall shutdown until save threads finish. Resumed by the last save thread when it finishes
 			coroutine.yield()
 		end
 	end

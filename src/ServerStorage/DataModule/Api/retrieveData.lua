@@ -22,6 +22,7 @@ local function retrieveData(CachedData)
 				return data[dataKey]
 			end
 		end
+		
 		-- Value not found in cache
 		warn(string.format("User with ID %d does not have %s in the cache", userId, dataKey))
 		return false

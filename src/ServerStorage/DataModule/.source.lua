@@ -9,6 +9,7 @@ local retrieveData = require(script.Api.retrieveData)
 local updateData = require(script.Api.updateData)
 local setData = require(script.Api.setData)
 local deleteData = require(script.Api.deleteData)
+local saveData = require(script.Api.saveData)
 local callbacks = require(script.callbacks)
 
 local DataModule = {
@@ -23,8 +24,9 @@ local DataModule = {
 	-- Server and client APIs
 	retrieveData = retrieveData(CachedData),
 	updateData = updateData(CachedData),
-	satData = setData(CachedData),
+	setData = setData(CachedData),
 	deleteData = deleteData(CachedData),
+	saveData = saveData(CachedData),
 	
 	-- Callbacks
 	onUpdateData = callbacks.updateDataCallback.setCallback,

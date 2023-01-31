@@ -10,8 +10,12 @@ local function saveData(CachedData)
 
 		Parameters:
 		player: The player to save data for and clean up resources for
+		dataKey: The name of the instance in the cache
 	]]
 	return function(userId, dataKey)
+		assert(type(userId) == "number", "userId should be a number")
+		assert(type(dataKey) == "string", "data key should be a string")
+		
 		local playerData = CachedData.data[userId]
 		
 		if not playerData then
@@ -19,23 +23,24 @@ local function saveData(CachedData)
 			return
 		end
 
-		if playerData then
-			for dataStore, data in pairs(playerData) do
-				if data[dataKey] then
-					local success, errorMessage = pcall(function()
-						-- Get Global DataStore
-						local dataStore = DataStoreService:GetDataStore(dataStore)
-						return DataManger.updateDataAsync(dataStore, userId, data)
-					end)
+		for dataStore, data in pairs(playerData) do
+			if data[dataKey] then
+				local success, errorMessage = pcall(function()
+					-- Get Global DataStore
+					local dataStore = DataStoreService:GetDataStore(dataStore)
+					return DataManger.saveDataAsync(dataStore, userId, data)
+				end)
 
-					if not success then
-						warn(errorMessage)
-					end
-					
-					return true
+				if not success then
+					warn(string.format("Failed to save %d's data: %s", userId, errorMessage))
 				end
+				return 
 			end
 		end
+		
+		-- Value not found in cache
+		warn(string.format("Key %s does not exist in the data for user %d", dataKey, userId))
+		return false
 	end
 end
 

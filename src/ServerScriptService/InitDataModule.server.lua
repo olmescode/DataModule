@@ -52,8 +52,6 @@ local deletedData = DataModule.deleteData(player.UserId, "Playtime")
 print(deletedData) -- Output: true
 ]]
 
-
--- A function to force update using setAsync
+-- add AutoSaving
 -- Set callbacks funtions on client
--- Optimize the saveData add -- Value not found in cache 
--- Delete callbacks not longer in use??
+-- Delete callbacks not longer in use?
