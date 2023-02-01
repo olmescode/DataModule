@@ -2,6 +2,7 @@ local Players = game:GetService("Players")
 local ServerStorage = game:GetService("ServerStorage")
 
 local DataModule = require(ServerStorage:WaitForChild("DataModule"))
+local AUTOSAVE_INTERVAL = 300 -- 5 minutes
 
 local DataStores = {
 	ExampleDataStore5 = {
@@ -31,8 +32,22 @@ end)
 --Players.PlayerAdded:Connect(onPlayerAdded(player, DataStores))
 
 Players.PlayerRemoving:Connect(function(player)
-	DataModule.saveDataAsync(player)
+	DataModule.saveDataAsync(player, DataModule.config.resetOnPlayerRemoving)
 end)
+
+--[[
+	An infinite loop that saves the data of all players currently in the
+	experience every AUTOSAVE_INTERVAL
+]]
+local function startAutosave()
+	task.spawn(function()
+		while true do
+			task.wait(AUTOSAVE_INTERVAL)
+
+			DataModule.autosave()
+		end
+	end)
+end
 
 game:BindToClose(function()
 	DataModule.onBindToClose()
@@ -52,6 +67,6 @@ local deletedData = DataModule.deleteData(player.UserId, "Playtime")
 print(deletedData) -- Output: true
 ]]
 
--- add AutoSaving
+-- add enabled - disables
 -- Set callbacks funtions on client
 -- Delete callbacks not longer in use?

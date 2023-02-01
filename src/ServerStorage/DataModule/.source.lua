@@ -5,11 +5,13 @@ local CachedData = require(script.Components.CachedData)
 local onPlayerAdded = require(script.Components.onPlayerAdded)
 local onPlayerRemoved = require(script.Components.onPlayerRemoved)
 local onBindToClose = require(script.Components.onBindToClose)
+local autosave = require(script.Components.autosave)
 local retrieveData = require(script.Api.retrieveData)
 local updateData = require(script.Api.updateData)
 local setData = require(script.Api.setData)
 local deleteData = require(script.Api.deleteData)
 local saveData = require(script.Api.saveData)
+local config = require(script.serverConfig)
 local callbacks = require(script.callbacks)
 
 local DataModule = {
@@ -18,6 +20,8 @@ local DataModule = {
 	loadDataAsync = onPlayerAdded(CachedData), 
 	saveDataAsync = onPlayerRemoved(CachedData),
 	onBindToClose = onBindToClose(CachedData),
+	autosave = autosave(CachedData),
+	config = config,
 	
 	-- Client APIs
 	

@@ -11,17 +11,25 @@ local function onPlayerRemoved(CachedData)
 		Parameters:
 		player: The player to save data for and clean up resources for
 	]]
-	return function(player)
+	return function(player, resetOnPlayerRemoving)
 		local playerData = CachedData.data[player.UserId]
 		
 		if playerData then
 			for dataStore, data in pairs(playerData) do
-				local success, errorMessage = pcall(function()
-					-- Get Global DataStore
-					local dataStore = DataStoreService:GetDataStore(dataStore)
-					return DataManger.updateDataAsync(dataStore, player.UserId, data)
-				end)
-
+				local dataStore = DataStoreService:GetDataStore(dataStore)
+				local success = nil
+				local errorMessage
+				
+				if resetOnPlayerRemoving then
+					success, errorMessage = pcall(function()
+						DataManger.removeDataAsync(dataStore, player.UserId)
+					end)
+				else
+					success, errorMessage = pcall(function()
+						DataManger.updateDataAsync(dataStore, player.UserId, data)
+					end)
+				end
+				
 				if not success then
 					warn(errorMessage)
 				end

@@ -103,12 +103,12 @@ function DataManger.saveOrderedDataAsync(orderedDataStore, playerKey, playerData
 end
 
 -- Removing data
-function DataManger.removeData(dataStore, playerKey)
+function DataManger.removeDataAsync(dataStore, playerKey)
 	local tries = 0
 	local success = nil
 	local errorMessage = nil
 	repeat
-		success, errorMessage = pcall(dataStore.removeData, dataStore, playerKey)
+		success, errorMessage = pcall(dataStore.RemoveAsync, dataStore, playerKey)
 	until success or tries == 5
 	
 	if not success then
