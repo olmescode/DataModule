@@ -19,8 +19,8 @@ local DataModule = {
 	-- Server APIs
 	loadDataAsync = onPlayerAdded(CachedData), 
 	saveDataAsync = onPlayerRemoved(CachedData),
-	onBindToClose = onBindToClose(CachedData),
-	autosave = autosave(CachedData),
+	onServerShutdown = onBindToClose(CachedData),
+	autosaveData = autosave(CachedData),
 	config = config,
 	
 	-- Client APIs

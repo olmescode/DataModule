@@ -44,13 +44,13 @@ local function startAutosave()
 		while true do
 			task.wait(AUTOSAVE_INTERVAL)
 
-			DataModule.autosave()
+			DataModule.autosaveData()
 		end
 	end)
 end
 
 game:BindToClose(function()
-	DataModule.onBindToClose()
+	DataModule.onServerShutdown()
 end)
 
 --[[

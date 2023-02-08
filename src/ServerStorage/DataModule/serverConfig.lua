@@ -1,7 +1,7 @@
 local initialValues = {
 	-- The name of the datastore used by the Data Store to store the data
 	-- that players have collected
-	-- [Format]
+	-- [Format for setup Data]
 	ExampleDataStore1 = {
 		Playtime = 0,
 		HalloweenCandies = 0
