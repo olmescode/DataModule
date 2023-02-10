@@ -14,7 +14,12 @@ end
 function CachedData.clearCache(userId)
 	CachedData.data[userId] = nil
 end
+--[[
+	Fires when the value of a specific instance is changed
 
+	Parameters:
+	dataKey: The name of the instance in the cache
+]]
 function CachedData.onUpdate(dataKey, callback)
 	CachedData.callbacks[dataKey] = callback
 end

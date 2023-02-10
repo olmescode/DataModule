@@ -31,12 +31,18 @@ function DataManger.loadDataAsync(dataStore, playerKey)
 		
 		if dataStoreKeyInfo then
 			lastSession = os.time() - (dataStoreKeyInfo.UpdatedTime/1000)
-			-- Wait if the data was updated less than 30 seconds ago
-			if lastSession < 30 then
+			--[[
+				If a player attempt to rejoin the game really quickly it ensures the data
+				has been successfully updated in the last 30 seconds else it yields to give
+				more time to the save process
+			]]
+			if lastSession <= 30 then
+				break
+			else
 				task.wait(3)
 			end
 		end
-	until success and lastSession > 30 or not Players:GetPlayerByUserId(playerKey) or tries == 10
+	until success and lastSession > 60 or not Players:GetPlayerByUserId(playerKey) or tries == 10
 
 	if success then
 		return playerData

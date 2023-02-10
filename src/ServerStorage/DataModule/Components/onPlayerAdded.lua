@@ -23,29 +23,29 @@ local function onPlayerAdded(CachedData)
 		Parameters:
 		player: The player to send data to
 	]]
-	return function(dataStore, player, data)
+	return function(dataStore, userId, data)
 		local success, playerData = pcall(function()
 			-- Get Global DataStore
 			local dataStore = DataStoreService:GetDataStore(dataStore)
-			return DataManger.loadDataAsync(dataStore, player.UserId)
+			return DataManger.loadDataAsync(dataStore, userId)
 		end)
 		
 		if success then
 			if not playerData then
-				warn(string.format("User %d does not have registered data in DataStore %s", player.UserId, dataStore))
+				warn(string.format("User %d does not have registered data in DataStore %s", userId, dataStore))
 				playerData = {}
 			end
 			-- Fill
 			playerData = setExtraPlayerData(playerData, data)
 			
-			CachedData.data[player.UserId] = CachedData.data[player.UserId] or {}
-			CachedData.data[player.UserId][dataStore] = playerData
+			CachedData.data[userId] = CachedData.data[userId] or {}
+			CachedData.data[userId][dataStore] = playerData
 
 			--remotes.onPlayerAdded:FireClient(player, playerData)
 		else
 			local warning = "There was an error getting the data for the "
 				.. "player with UserId: "
-				.. player.UserId
+				.. userId
 				.. ".\n\nIf you are running in Studio, make sure is enabled "
 				.. "'Studio Access to API Services'"
 

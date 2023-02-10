@@ -15,28 +15,34 @@ local config = require(script.serverConfig)
 local callbacks = require(script.callbacks)
 
 local DataModule = {
-	-- CRUD (create, read, update, and delete)
-	-- Server APIs
+	-- Configurations
+	config = config,
+	
+	-- Functions
 	loadDataAsync = onPlayerAdded(CachedData), 
 	saveDataAsync = onPlayerRemoved(CachedData),
 	onServerShutdown = onBindToClose(CachedData),
 	autosaveData = autosave(CachedData),
-	config = config,
+	
+	-- Server APIs
+	saveData = saveData(CachedData),
 	
 	-- Client APIs
 	
 	-- Server and client APIs
+	setData = setData(CachedData),
 	retrieveData = retrieveData(CachedData),
 	updateData = updateData(CachedData),
-	setData = setData(CachedData),
 	deleteData = deleteData(CachedData),
-	saveData = saveData(CachedData),
 	
 	-- Callbacks
 	onUpdateData = callbacks.updateDataCallback.setCallback,
 	onSetData = callbacks.setDataCallback.setCallback,
 	onDeleteData = callbacks.deleteDataCallvack.setCallback,
-	
+
+	--[[
+		Fires when the value of a specific data in the cache is changed
+	]]
 	onUpdate = callbacks.addCallback
 	
 }

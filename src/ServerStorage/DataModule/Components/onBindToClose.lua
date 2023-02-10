@@ -48,7 +48,6 @@ local function onBindToClose(CachedData)
 
 		for userId, playerData in pairs(CachedData) do
 			numThreadsRunning += 1
-
 			-- This loop finishes running and counting numThreadsRunning before any of
 			-- the save threads start because coroutine.wrap has built-in deferral on start
 			startSaveThread(userId, playerData)

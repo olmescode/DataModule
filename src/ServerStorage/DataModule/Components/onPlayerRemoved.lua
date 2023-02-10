@@ -11,8 +11,8 @@ local function onPlayerRemoved(CachedData)
 		Parameters:
 		player: The player to save data for and clean up resources for
 	]]
-	return function(player, resetOnPlayerRemoving)
-		local playerData = CachedData.data[player.UserId]
+	return function(userId, resetOnPlayerRemoving)
+		local playerData = CachedData.data[userId]
 		
 		if playerData then
 			for dataStore, data in pairs(playerData) do
@@ -22,11 +22,11 @@ local function onPlayerRemoved(CachedData)
 				
 				if resetOnPlayerRemoving then
 					success, errorMessage = pcall(function()
-						DataManger.removeDataAsync(dataStore, player.UserId)
+						DataManger.removeDataAsync(dataStore, userId)
 					end)
 				else
 					success, errorMessage = pcall(function()
-						DataManger.updateDataAsync(dataStore, player.UserId, data)
+						DataManger.updateDataAsync(dataStore, userId, data)
 					end)
 				end
 				
@@ -36,7 +36,7 @@ local function onPlayerRemoved(CachedData)
 			end
 		end
 		
-		CachedData.clearCache(player.UserId)
+		CachedData.clearCache(userId)
 	end
 end
 
