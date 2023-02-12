@@ -15,7 +15,7 @@ The DataModule library offers a number of key features, including:
 ### Usage
 To use the DataModule library in your project, you need to require the DataModule script. This script contains the main functionality of the library, including the configuration, functions, server APIs, client APIs, and callbacks.
 
-### SetUp
+### Setting up
 ~~~
 local Players = game:GetService("Players")
 local ServerStorage = game:GetService("ServerStorage")
