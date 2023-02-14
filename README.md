@@ -1,5 +1,5 @@
 # DataModule
-DataModule is a versatile and efficient Roblox Library that provides a central point to manage and cache storage players' data in Roblox games The library includes configurations, server, and client APIs, and callbacks. 
+DataModule is a versatile and efficient Roblox Library that provides a central point to manage and cache storage players' data in Roblox games. The library includes configurations, server, and client APIs, and callbacks. 
 
 ## Features
 The DataModule library offers a number of key features, including:
@@ -80,8 +80,8 @@ startAutosave()
 ### API Functions
 * `loadDataAsync(dataStore, userId, data)`: loads the data of a player when they join the game
 * `saveDataAsync(userId, resetOnPlayerRemoving)`: saves the data of a player when they leave the game
-* `onServerShutdown()`: saves the data of all players when the server shuts down.
-* `autosaveData()`: saves the data of all players periodically.
+* `onServerShutdown()`: saves the data of all players when the server shuts down
+* `autosaveData()`: saves the data of all players periodically
 
 ### Server APIs
 * `saveData(userId, dataKey)`: A function that saves the data of a specific player
