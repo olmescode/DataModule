@@ -75,30 +75,30 @@ startAutosave()
 ## API Documentation
 
 ### Configurations
-* `config`: A module that holds the server configurations
+* `config`: A module that holds the server configurations.
 
 ### API Functions
-* `loadDataAsync`: A function that loads the data of a player when they join the game
-* `saveDataAsync`: A function that saves the data of a player when they leave the game
-* `onServerShutdown`: A function that saves the data of all players when the server shuts down
-* `autosaveData`: A function that saves the data of all players periodically
+* `loadDataAsync(dataStore, userId, data)`: loads the data of a player when they join the game
+* `saveDataAsync(userId, resetOnPlayerRemoving)`: saves the data of a player when they leave the game
+* `onServerShutdown()`: saves the data of all players when the server shuts down.
+* `autosaveData()`: saves the data of all players periodically.
 
 ### Server APIs
-* `saveData`: A function that saves the data of a specific player
+* `saveData(userId, dataKey)`: A function that saves the data of a specific player
 
 ### Server and Client APIs
-* `setData`: allows the server and client to set new data in the cache for a specific player
-* `retrieveData`: allows the server and client to retrieve data from the cache of a specific player
-* `updateData`: allows the server and client to update the data in the cache of a specific player
-* `deleteData`: allows the server and client to delete the data in the cache of a specific player
+* `setData(userId, dataStore, dataKey, dataValue)`: allows the server and client to set new data in the cache for a specific player
+* `retrieveData(userId, dataKey)`: allows the server and client to retrieve data from the cache of a specific player
+* `updateData(userId, dataKey)`: allows the server and client to update the data in the cache of a specific player
+* `deleteData(userId, dataKey)`: allows the server and client to delete the data in the cache of a specific player
 
 ## Callbacks
 The DataModule Library offers callbacks to handle the changes made in the cache and DataStore. These callbacks are available for the update, set, and delete operations.
 
-* `onUpdateData`: A callback that fires when the value of a specific data in the cache is changed.
-* `onSetData`: A callback that fires when the data of a specific player is set.
-* `onDeleteData`: A callback that fires when the data of a specific player is deleted.
-* `onUpdate`: A callback that fires when any data in the cache is changed.
+* `onUpdateData(callback)`: A callback that fires when the value of a specific data in the cache is changed.
+* `onSetData(callback)`: A callback that fires when the data of a specific player is set.
+* `onDeleteData(callback)`: A callback that fires when the data of a specific player is deleted.
+* `onUpdate(dataKey, callback)`: A callback that fires when any data in the cache is changed.
 
 ## Additional Information
 Please note that the DataModule library will only persist data changes made through the `setData`, `updateData`, and `deleteData` methods when called from the server. These changes will be saved in the designated DataStore.
