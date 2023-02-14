@@ -1,21 +1,21 @@
-## DataModule
+# DataModule
 DataModule is a versatile and efficient Roblox Library that provides a central point to manage and cache storage players' data in Roblox games The library includes configurations, server, and client APIs, and callbacks. 
 
-### Features
+## Features
 The DataModule library offers a number of key features, including:
 
 * Easy-to-use, clear and modular API for data storage and retrieval.
 * Server and client APIs for setting, retrieving, updating, and deleting data.
 * Efficient data caching, with the library storing data in memory for quick access.
-* Guaranteed consistency between server and client data
-* Event-based callbacks for changes to data, including updates, sets, and deletes
-* Default data options for players with no saved data in the DataStore
+* Guaranteed consistency between server and client data.
+* Event-based callbacks for changes to data, including updates, sets, and deletes.
+* Default data options for players with no saved data in the DataStore.
 * Autosaving feature to automatically save data changes in the DataStore.
 
-### Usage
-To use the DataModule library in your project, you need to require the DataModule script. This script contains the main functionality of the library, including the configuration, functions, server APIs, client APIs, and callbacks.
+## Usage
+To use the DataModule library in your project, you need to require the DataModule script. This ModuleScript contains the main functionalities of the library, including the configuration, functions, server APIs, client APIs, and callbacks.
 
-### Setting up
+## Setting up
 ~~~
 local Players = game:GetService("Players")
 local ServerStorage = game:GetService("ServerStorage")
@@ -69,15 +69,38 @@ end
 game:BindToClose(function()
 	DataModule.onServerShutdown()
 end)
+
+startAutosave()
 ~~~
+## API Documentation
+
+### Configurations
+* `config`: A module that holds the server configurations
+
 ### API Functions
-* `addConfiguration()`: Passes in a table with the desired properties for the design of the overhead GUI
-* `createOverheadGUI(player)`: Creates and displays the overhead GUI above the player's character
-* `hasVipPass(player, vipPassId)`: Returns whether the player owns the specified VIP game pass
-* `isTopPlayer(player)`: Returns whether the player is in the top 10 of the specified DataStore leaderboard
-* `tweenUiGradient(uiGradient)`: Applies a looping animation to the specified UI gradient object
+* `loadDataAsync`: A function that loads the data of a player when they join the game
+* `saveDataAsync`: A function that saves the data of a player when they leave the game
+* `onServerShutdown`: A function that saves the data of all players when the server shuts down
+* `autosaveData`: A function that saves the data of all players periodically
 
-### Additional Information
+### Server APIs
+* `saveData`: A function that saves the data of a specific player
 
+### Server and Client APIs
+* `setData`: allows the server and client to set new data in the cache for a specific player
+* `retrieveData`: allows the server and client to retrieve data from the cache of a specific player
+* `updateData`: allows the server and client to update the data in the cache of a specific player
+* `deleteData`: allows the server and client to delete the data in the cache of a specific player
 
-### Note
+## Callbacks
+The DataModule Library offers callbacks to handle the changes made in the cache and DataStore. These callbacks are available for the update, set, and delete operations.
+
+* `onUpdateData`: A callback that fires when the value of a specific data in the cache is changed.
+* `onSetData`: A callback that fires when the data of a specific player is set.
+* `onDeleteData`: A callback that fires when the data of a specific player is deleted.
+* `onUpdate`: A callback that fires when any data in the cache is changed.
+
+## Additional Information
+Please note that the DataModule library will only persist data changes made through the `setData`, `updateData`, and `deleteData` methods when called from the server. These changes will be saved in the designated DataStore.
+
+## License
