@@ -2,17 +2,14 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local DataModule = require(ReplicatedStorage:WaitForChild("DataModule"))
---local DataModuleAPI = require(DataModule)
---local onPlayerAdded = require(DataModule.Api.onPlayerAdded)
-
-DataModule.init()
+local AUTOSAVE_INTERVAL = 300 -- 5 minutes
 
 local DataStores = {
-	ExampleDataStore1 = {
+	ExampleDataStore5 = {
 		Playtime = 10,
 		HalloweenCandies = 0
 	},
-	ExampleDataStore2 = {
+	ExampleDataStore6 = {
 		Event = "HalloweenEvent",
 		Banned = true,
 		Items = {
@@ -28,15 +25,32 @@ local DataStores = {
 
 Players.PlayerAdded:Connect(function(player)
 	for dataStore, data in pairs(DataStores) do
-		DataModule.loadDataAsync(player, dataStore, data)
-		--onPlayerAdded(player, dataStore, data)(player)
+		DataModule.loadDataAsync(dataStore, player.UserId, data)
 	end
 end)
 
 --Players.PlayerAdded:Connect(onPlayerAdded(player, DataStores))
 
 Players.PlayerRemoving:Connect(function(player)
-	DataModule.clearData(player)
+	DataModule.saveDataAsync(player.UserId, DataModule.config.resetOnPlayerRemoving)
+end)
+
+--[[
+	An infinite loop that saves the data of all players currently in the
+	experience every AUTOSAVE_INTERVAL
+]]
+local function startAutosave()
+	task.spawn(function()
+		while true do
+			task.wait(AUTOSAVE_INTERVAL)
+
+			DataModule.autosaveData()
+		end
+	end)
+end
+
+game:BindToClose(function()
+	DataModule.onServerShutdown()
 end)
 
 --[[
@@ -49,10 +63,11 @@ print(updatedPlayTime) -- Output: 20
 local newEvent = DataModule.setData(player.UserId, "ExampleDataStore1", "NewEvent", "true")
 print(newEvent) -- Output: "true"
 
-local deletedData = DataModule.deleteData(player.UserId, "ExampleDataStore1")
+local deletedData = DataModule.deleteData(player.UserId, "Playtime")
 print(deletedData) -- Output: true
 ]]
 
-
---Make the function when player is leaving with updateAsyn, a function to force update using setAsync and bindtoclose
---Set callbacks funtions on client and server
+-- add enabled - disables
+-- Delete callbacks not longer in use?
+-- Add compatibility on cliend
+-- Fix the fire server to execute only in server

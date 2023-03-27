@@ -48,7 +48,7 @@ local DataModule = {
 }
 
 function DataModule.init()
-	assert(RunService:IsServer(), "DataModule must be called on server")
+	--assert(RunService:IsServer(), "DataModule must be called on server")
 	
 	CachedData.init()
 end

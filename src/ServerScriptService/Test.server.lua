@@ -1,5 +1,5 @@
-local ServerStorage = game:GetService("ServerStorage")
-local DataModule = require(ServerStorage:WaitForChild("DataModule"))
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local DataModule = require(ReplicatedStorage:WaitForChild("DataModule"))
 
 local ProxyPrompt  = game.Workspace.SpawnLocation.ProximityPrompt
 

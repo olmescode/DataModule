@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local DataStoreService = game:GetService("DataStoreService")
 
 local DataModule = script:FindFirstAncestor("DataModule")
@@ -23,7 +24,16 @@ local function onPlayerAdded(CachedData)
 		Parameters:
 		player: The player to send data to
 	]]
-	return function(dataStore, userId, data)
+	return function(dataStore, userId, data, isClient)
+		if isClient then
+			-- Store the player data in CachedData
+			CachedData.data[userId] = CachedData.data[userId] or {}
+			CachedData.data[userId][dataStore] = data
+			
+			return
+		end
+		
+		local player = Players:GetPlayerByUserId(userId)
 		local success, playerData = pcall(function()
 			-- Get Global DataStore
 			local dataStore = DataStoreService:GetDataStore(dataStore)
@@ -35,13 +45,15 @@ local function onPlayerAdded(CachedData)
 				warn(string.format("User %d does not have registered data in DataStore %s", userId, dataStore))
 				playerData = {}
 			end
-			-- Fill
+			-- Fill missing data
 			playerData = setExtraPlayerData(playerData, data)
 			
+			-- Store the player data in CachedData
 			CachedData.data[userId] = CachedData.data[userId] or {}
 			CachedData.data[userId][dataStore] = playerData
-
-			--remotes.onPlayerAdded:FireClient(player, playerData)
+			
+			-- Send the player data to the client
+			remotes.LoadData:FireClient(player, dataStore, playerData)
 		else
 			local warning = "There was an error getting the data for the "
 				.. "player with UserId: "
@@ -50,7 +62,7 @@ local function onPlayerAdded(CachedData)
 				.. "'Studio Access to API Services'"
 
 			warn(warning)
-			--playerDataRemote:FireClient(player, {})
+			remotes.LoadData:FireClient(player, dataStore, {})
 		end
 	end
 end

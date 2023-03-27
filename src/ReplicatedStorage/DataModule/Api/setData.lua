@@ -1,5 +1,9 @@
+local Players = game:GetService("Players")
+
 local DataModule = script:FindFirstAncestor("DataModule")
 local callbacks = require(DataModule.callbacks)
+
+local remotes = DataModule.Remotes
 
 local function setData(CachedData)
 	--[[
@@ -16,7 +20,8 @@ local function setData(CachedData)
 		assert(type(dataStore) == "string", "dataStore should be a string")
 		assert(type(dataKey) == "string", "data key should be a string")
 		assert(type(dataValue) ~= "nil", "value should be provided")
-
+		
+		local player = Players:GetPlayerByUserId(userId)
 		local playerData = CachedData.data[userId]
 		
 		if not playerData then
@@ -45,6 +50,9 @@ local function setData(CachedData)
 				callbacks.setDataCallback.fireCallback(userId, dataStore, dataKey, dataValue)
 			end
 		end
+		
+		-- Set the new player data to the client
+		remotes.SetData:FireClient(player, dataStore, dataKey, dataValue)
 	end
 end
 
