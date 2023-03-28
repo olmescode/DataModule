@@ -5,7 +5,7 @@ local callbacks = require(DataModule.callbacks)
 
 local remotes = DataModule.Remotes
 
-local function updateData(CachedData)
+local function updateData(CachedData, serverConfig)
 	--[[
 		Allows to update data to CahedData
 
@@ -38,11 +38,10 @@ local function updateData(CachedData)
 					callback(userId, dataKey, dataValue)
 				end
 				
-				if isServer then
-					-- 
+				if serverConfig then
+					-- Update the player data to the client
+					remotes.UpdateData:FireClient(player, dataKey, dataValue)
 				end
-				-- Update the player data to the client
-				remotes.UpdateData:FireClient(player, dataKey, dataValue)
 				
 				return true
 			end

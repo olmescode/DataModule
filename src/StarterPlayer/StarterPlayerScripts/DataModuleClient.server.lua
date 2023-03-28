@@ -10,7 +10,7 @@ local remotes = DataModule.Remotes
 
 -- Listen to the SetData event fired from the server
 remotes.LoadData.OnClientEvent:Connect(function(dataStore, playerData)
-	DataModuleAPI.loadDataAsync(dataStore, player.UserId, playerData, true)
+	DataModuleAPI.loadDataAsync(dataStore, player.UserId, playerData)
 end)
 
 -- Listen to the UpdateData event fired from the server

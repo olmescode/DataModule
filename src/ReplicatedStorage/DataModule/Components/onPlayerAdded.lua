@@ -16,7 +16,7 @@ local function setExtraPlayerData(playerData, allPlayerData)
 	return playerData
 end
 
-local function onPlayerAdded(CachedData)
+local function onPlayerAdded(CachedData, serverConfig)
 	--[[
 		Loads the data that the player has and sends that data
 		to the client
@@ -24,8 +24,8 @@ local function onPlayerAdded(CachedData)
 		Parameters:
 		player: The player to send data to
 	]]
-	return function(dataStore, userId, data, isClient)
-		if isClient then
+	return function(dataStore, userId, data)
+		if not serverConfig then
 			-- Store the player data in CachedData
 			CachedData.data[userId] = CachedData.data[userId] or {}
 			CachedData.data[userId][dataStore] = data
@@ -41,10 +41,8 @@ local function onPlayerAdded(CachedData)
 		end)
 		
 		if success then
-			if not playerData then
-				warn(string.format("User %d does not have registered data in DataStore %s", userId, dataStore))
-				playerData = {}
-			end
+			playerData = playerData or {}
+			
 			-- Fill missing data
 			playerData = setExtraPlayerData(playerData, data)
 			

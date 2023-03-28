@@ -32,7 +32,7 @@ end)
 --Players.PlayerAdded:Connect(onPlayerAdded(player, DataStores))
 
 Players.PlayerRemoving:Connect(function(player)
-	DataModule.saveDataAsync(player.UserId, DataModule.config.resetOnPlayerRemoving)
+	DataModule.saveDataAsync(player.UserId)
 end)
 
 --[[
@@ -69,5 +69,3 @@ print(deletedData) -- Output: true
 
 -- add enabled - disables
 -- Delete callbacks not longer in use?
--- Add compatibility on cliend
--- Fix the fire server to execute only in server

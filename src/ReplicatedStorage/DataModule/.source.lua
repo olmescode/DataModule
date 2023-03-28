@@ -11,15 +11,19 @@ local updateData = require(script.Api.updateData)
 local setData = require(script.Api.setData)
 local deleteData = require(script.Api.deleteData)
 local saveData = require(script.Api.saveData)
-local config = require(script.serverConfig)
 local callbacks = require(script.callbacks)
+
+local serverConfig = nil
+if RunService:IsServer() then
+	serverConfig = require(script.serverConfig)
+end
 
 local DataModule = {
 	-- Configurations
-	config = config,
+	config = serverConfig,
 	
 	-- Functions
-	loadDataAsync = onPlayerAdded(CachedData), 
+	loadDataAsync = onPlayerAdded(CachedData, serverConfig), 
 	saveDataAsync = onPlayerRemoved(CachedData),
 	onServerShutdown = onBindToClose(CachedData),
 	autosaveData = autosave(CachedData),
@@ -30,10 +34,10 @@ local DataModule = {
 	-- Client APIs
 	
 	-- Server and client APIs
-	setData = setData(CachedData),
+	setData = setData(CachedData, serverConfig),
 	retrieveData = retrieveData(CachedData),
-	updateData = updateData(CachedData),
-	deleteData = deleteData(CachedData),
+	updateData = updateData(CachedData, serverConfig),
+	deleteData = deleteData(CachedData, serverConfig),
 	
 	-- Callbacks
 	onUpdateData = callbacks.updateDataCallback.setCallback,
@@ -47,12 +51,7 @@ local DataModule = {
 	
 }
 
-function DataModule.init()
-	--assert(RunService:IsServer(), "DataModule must be called on server")
-	
-	CachedData.init()
-end
-
-DataModule.init()
+-- Initialize the cached data when the module is first required
+CachedData.init()
 
 return DataModule

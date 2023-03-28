@@ -5,7 +5,7 @@ local callbacks = require(DataModule.callbacks)
 
 local remotes = DataModule.Remotes
 
-local function setData(CachedData)
+local function setData(CachedData, serverConfig)
 	--[[
 		Allows to set new data in CahedData
 
@@ -51,8 +51,10 @@ local function setData(CachedData)
 			end
 		end
 		
-		-- Set the new player data to the client
-		remotes.SetData:FireClient(player, dataStore, dataKey, dataValue)
+		if serverConfig then
+			-- Set the new player data to the client
+			remotes.SetData:FireClient(player, dataStore, dataKey, dataValue)
+		end
 	end
 end
 
