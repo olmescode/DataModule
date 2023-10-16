@@ -23,7 +23,7 @@ local DataModule = {
 	config = serverConfig,
 	
 	-- Functions
-	loadDataAsync = onPlayerAdded(CachedData, serverConfig), 
+	loadDataAsync = onPlayerAdded(CachedData, serverConfig),
 	saveDataAsync = onPlayerRemoved(CachedData),
 	onServerShutdown = onBindToClose(CachedData),
 	autosaveData = autosave(CachedData),
