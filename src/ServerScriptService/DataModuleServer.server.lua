@@ -29,8 +29,6 @@ Players.PlayerAdded:Connect(function(player)
 	end
 end)
 
---Players.PlayerAdded:Connect(onPlayerAdded(player, DataStores))
-
 Players.PlayerRemoving:Connect(function(player)
 	DataModule.saveDataAsync(player.UserId)
 end)
@@ -52,20 +50,3 @@ end
 game:BindToClose(function()
 	DataModule.onServerShutdown()
 end)
-
---[[
-local playTime = DataModule.retrieveData(player.UserId, "Playtime")
-print(playTime) -- Output: 10
-
-local updatedPlayTime = DataModule.updateData(player.UserId, "Playtime", 20)
-print(updatedPlayTime) -- Output: 20
-
-local newEvent = DataModule.setData(player.UserId, "ExampleDataStore1", "NewEvent", "true")
-print(newEvent) -- Output: "true"
-
-local deletedData = DataModule.deleteData(player.UserId, "Playtime")
-print(deletedData) -- Output: true
-]]
-
--- add enabled - disables
--- Delete callbacks not longer in use?

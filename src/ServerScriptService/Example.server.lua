@@ -10,7 +10,6 @@ ProxyPrompt.Triggered:Connect(function(player)
 	DataModule.updateData(player.UserId, "Playtime", playTime)
 end)
 
-
 DataModule.onUpdate("Playtime", function(userId, dataKey, dataValue)
 	print("Playtime for player " .. userId .. " has been updated to " .. dataValue)
 end)
