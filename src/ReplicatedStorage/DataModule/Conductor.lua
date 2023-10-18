@@ -8,6 +8,8 @@ local DataModuleAPI = require(DataModule)
 
 local enums = require(DataModule.enums)
 
+Conductor.IsLoadingDataModule = require(DataModule.Modules.IsLoadingDataModule)
+
 -- Events
 Conductor.LoadData = DataModule.Remotes.LoadData
 Conductor.UpdateData = DataModule.Remotes.UpdateData
@@ -34,6 +36,7 @@ Conductor.handleDeleteData = function(dataKey)
 	DataModuleAPI.deleteData(player.UserId, dataKey)
 end
 
+
 local hasBeenCalled = false
 
 return function(stubs)
@@ -54,6 +57,10 @@ return function(stubs)
 	Conductor.UpdateData.OnClientEvent:Connect(Conductor.handleUpdateData)
 	Conductor.SetData.OnClientEvent:Connect(Conductor.handleSetData)
 	Conductor.DeleteData.OnClientEvent:Connect(Conductor.handleDeleteData)
+	
+	-- Is Loading Data: Lets people know if SSF is loading a data
+	Conductor.handleIsLoadingData = Conductor.IsLoadingDataModule
+	Conductor.IsLoadingData.OnInvoke = Conductor.handleIsLoadingData
 
 	hasBeenCalled = true
 	script:SetAttribute(enums.Attribute.FrameworkReady, true)

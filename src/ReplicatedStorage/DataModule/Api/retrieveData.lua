@@ -1,3 +1,4 @@
+-- TODO Use a better system to wait fo the loaded data.
 local function retrievePlayerDataFromCache(CachedData, userId)
 	local playerData = CachedData.data[userId]
 	local counter = 0

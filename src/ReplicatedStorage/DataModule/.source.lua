@@ -12,6 +12,7 @@ local setData = require(script.Api.setData)
 local deleteData = require(script.Api.deleteData)
 local saveData = require(script.Api.saveData)
 local callbacks = require(script.callbacks)
+local isLoadingData = require(script.Api.isLoadingData)
 
 local serverConfig = nil
 if RunService:IsServer() then
@@ -38,6 +39,8 @@ local DataModule = {
 	retrieveData = retrieveData(CachedData),
 	updateData = updateData(CachedData, serverConfig),
 	deleteData = deleteData(CachedData, serverConfig),
+	
+	isLoadingData = isLoadingData,
 	
 	-- Callbacks
 	onUpdateData = callbacks.updateDataCallback.setCallback,
