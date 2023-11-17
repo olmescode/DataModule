@@ -9,8 +9,7 @@ local DataModule = script:FindFirstAncestor("DataModule")
 local DataModuleAPI = require(DataModule)
 
 local enums = require(DataModule.enums)
-
-Conductor.IsLoadingDataModule = require(DataModule.Modules.IsLoadingDataModule)
+local PlayerDataErrorType = require(script.Parent.PlayerDataErrorType)
 
 -- Events
 Conductor.LoadData = DataModule.Remotes.LoadData
@@ -20,8 +19,8 @@ Conductor.DeleteData = DataModule.Remotes.DeleteData
 Conductor.IsLoadingData = DataModule.Remotes.IsLoadingData
 
 -- Function to handle the LoadData event
-Conductor.handleLoadData = function(dataStoreName: string, data: PlayerData)
-	DataModuleAPI.loadDataAsync(dataStoreName, player.UserId, data)
+Conductor.handleLoadData = function(dataStoreName: string, data: PlayerData, errorType: PlayerDataErrorType.EnumType?)
+	DataModuleAPI.loadDataAsync(dataStoreName, player.UserId, data, errorType)
 end
 
 -- Function to handle the UpdateData event

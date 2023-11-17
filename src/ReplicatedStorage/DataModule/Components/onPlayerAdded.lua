@@ -32,11 +32,13 @@ local function onPlayerAdded(CachedData, serverConfig)
 		userId: The player userId
 		data: Additional data to load
 	]]
-	return function(dataStoreName: string, userId: number, data: PlayerData)
+	return function(dataStoreName: string, userId: number, data: PlayerData, errorType: PlayerDataErrorType.EnumType?)
 		if not serverConfig then
-			-- Store the player data in CachedData
+			-- Store the player's data in CachedData on the client
 			CachedData._playerData[userId] = CachedData._playerData[userId] or {}
 			CachedData._playerData[userId][dataStoreName] = data
+			
+			CachedData._playerDataLoadErrors[userId] = errorType
 			return
 		end
 		
@@ -72,7 +74,7 @@ local function onPlayerAdded(CachedData, serverConfig)
 			warn(warning)
 			
 			hasErrored = true
-			remotes.LoadData:FireClient(player, dataStoreName, {})
+			remotes.LoadData:FireClient(player, dataStoreName, {}, errorType)
 		end
 		
 		if hasErrored then
