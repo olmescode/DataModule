@@ -1,7 +1,19 @@
-local DataModule = script:FindFirstAncestor("DataModule")
+local function isLoadingData(CachedData)
+	--[[
+		Returns true if the server is currently loading the player's data
 
-local IsLoadingData = DataModule.Remotes.IsLoadingData
+		Parameters:
+		player: The player to check if data has loaded for
+	]]
+	return function(player: Player)
+		local threadsPendingLoad = CachedData._threadsPendingPlayerDataLoad[player]
 
-return function()
-	IsLoadingData:Invoke()
+		if threadsPendingLoad then
+			return true
+		end
+
+		return false
+	end
 end
+
+return isLoadingData
