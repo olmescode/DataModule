@@ -20,7 +20,7 @@ local function updateData(CachedData, serverConfig)
 		assert(type(dataValue) ~= "nil", "newValue should be provided")
 		
 		local player = Players:GetPlayerByUserId(userId)
-		local playerData = CachedData.data[userId]
+		local playerData = CachedData._playerData[userId]
 		local callback = callbacks[dataKey]
 
 		if not playerData then

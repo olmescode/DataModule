@@ -1,13 +1,13 @@
 -- TODO Use a better system to wait fo the loaded data.
 local function retrievePlayerDataFromCache(CachedData, userId)
-	local playerData = CachedData.data[userId]
+	local playerData = CachedData._playerData[userId]
 	local counter = 0
 	if not playerData then
 		repeat
 			counter = counter + 1
 			task.wait(0.1)
 			
-			playerData = CachedData.data[userId]
+			playerData = CachedData._playerData[userId]
 		until playerData or counter == 150
 	end
 

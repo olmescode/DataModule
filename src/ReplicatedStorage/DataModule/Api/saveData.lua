@@ -16,7 +16,7 @@ local function saveData(CachedData)
 		assert(type(userId) == "number", "userId should be a number")
 		assert(type(dataKey) == "string", "data key should be a string")
 		
-		local playerData = CachedData.data[userId]
+		local playerData = CachedData._playerData[userId]
 		
 		if not playerData then
 			warn(string.format("User with ID %d not found in cached data", userId))

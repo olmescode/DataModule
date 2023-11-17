@@ -11,7 +11,7 @@ local function autosave(CachedData)
 	]]
 	return function()
 		for _, player in ipairs(Players:GetPlayers()) do
-			local playerData = CachedData.data[player.UserId]
+			local playerData = CachedData._playerData[player.UserId]
 			
 			if playerData then
 				for dataStore, data in pairs(playerData) do

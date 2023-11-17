@@ -12,7 +12,7 @@ local function onPlayerRemoved(CachedData)
 		player: The player to save data for and clean up resources for
 	]]
 	return function(userId, resetOnPlayerRemoving)
-		local playerData = CachedData.data[userId]
+		local playerData = CachedData._playerData[userId]
 		
 		if playerData then
 			for dataStore, data in pairs(playerData) do
@@ -38,8 +38,8 @@ local function onPlayerRemoved(CachedData)
 		
 		-- Clear out saved values for this player to avoid memory leaks
 		CachedData.clearCache(userId)
-		CachedData._threadsPendingPlayerDataLoad[userId] = nil
 		CachedData._playerDataLoadErrors[userId] = nil
+		CachedData._threadsPendingPlayerDataLoad[userId] = nil
 	end
 end
 

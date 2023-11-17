@@ -10,8 +10,8 @@ local PlayerDataErrorType = require(DataModule.PlayerDataErrorType)
 
 local remotes = DataModule.Remotes
 
-local function setExtraPlayerData(playerData, allPlayerData)
-	for dataStoreKey, dataStoreValue in pairs(allPlayerData) do
+local function setExtraPlayerData(playerData, defaultData)
+	for dataStoreKey, dataStoreValue in pairs(defaultData) do
 		if not playerData[dataStoreKey] then
 			playerData[dataStoreKey] = dataStoreValue
 		end
@@ -33,9 +33,8 @@ local function onPlayerAdded(CachedData, serverConfig)
 	return function(dataStore, userId, data)
 		if not serverConfig then
 			-- Store the player data in CachedData
-			CachedData.data[userId] = CachedData.data[userId] or {}
-			CachedData.data[userId][dataStore] = data
-			
+			CachedData._playerData[userId] = CachedData._playerData[userId] or {}
+			CachedData._playerData[userId][dataStore] = data
 			return
 		end
 		
@@ -56,8 +55,8 @@ local function onPlayerAdded(CachedData, serverConfig)
 			playerData = setExtraPlayerData(playerData, data)
 			
 			-- Store the player data in CachedData
-			CachedData.data[userId] = CachedData.data[userId] or {}
-			CachedData.data[userId][dataStore] = playerData
+			CachedData._playerData[userId] = CachedData._playerData[userId] or {}
+			CachedData._playerData[userId][dataStore] = playerData
 			
 			-- Send the player data to the client
 			remotes.LoadData:FireClient(player, dataStore, playerData)

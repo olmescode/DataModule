@@ -3,7 +3,7 @@ export type PlayerData = { [string]: any }
 local CachedData = {}
 
 function CachedData.init()
-	CachedData.data = {} :: { [string]: PlayerData }
+	CachedData._playerData = {} :: { [string]: PlayerData }
 	CachedData._threadsPendingPlayerDataLoad = {} :: { [string]: { thread } }
 	CachedData._playerDataLoadErrors = {} :: { [string]: string }
 end
@@ -15,7 +15,7 @@ end
 	userId: The userId of the player to clean up resources for
 ]]
 function CachedData.clearCache(userId)
-	CachedData.data[userId] = nil
+	CachedData._playerData[userId] = nil
 end
 
 return CachedData

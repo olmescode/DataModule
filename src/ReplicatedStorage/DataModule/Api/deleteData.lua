@@ -19,7 +19,7 @@ local function deleteData(CachedData, serverConfig)
 		assert(type(dataKey) == "string", "data key should be a string")
 		
 		local player = Players:GetPlayerByUserId(userId)
-		local playerData = CachedData.data[userId]
+		local playerData = CachedData._playerData[userId]
 		local callback = callbacks[dataKey]
 		
 		if not playerData then
