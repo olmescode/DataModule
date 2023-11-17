@@ -2,7 +2,9 @@ local Players = game:GetService("Players")
 local DataStoreService = game:GetService("DataStoreService")
 
 local DataModule = script:FindFirstAncestor("DataModule")
+
 local DataManger = require(DataModule.Modules.DataManger)
+local state = require(DataModule.state)
 
 local remotes = DataModule.Remotes
 
@@ -22,7 +24,9 @@ local function onPlayerAdded(CachedData, serverConfig)
 		to the client
 
 		Parameters:
-		player: The player to send data to
+		dataStore: The DataStore to retrieve data from
+		userId: The player userId
+		data: Additional data to load
 	]]
 	return function(dataStore, userId, data)
 		if not serverConfig then
@@ -32,6 +36,12 @@ local function onPlayerAdded(CachedData, serverConfig)
 			
 			return
 		end
+		
+		if state.LoadingData then
+			warn("Data is already loading")
+			return
+		end
+		state.LoadingData = true
 		
 		local player = Players:GetPlayerByUserId(userId)
 		local success, playerData = pcall(function()
@@ -62,6 +72,8 @@ local function onPlayerAdded(CachedData, serverConfig)
 			warn(warning)
 			remotes.LoadData:FireClient(player, dataStore, {})
 		end
+		
+		state.LoadingData = false
 	end
 end
 
