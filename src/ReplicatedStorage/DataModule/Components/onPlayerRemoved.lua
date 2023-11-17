@@ -36,7 +36,9 @@ local function onPlayerRemoved(CachedData)
 			end
 		end
 		
+		-- Clear out saved values for this player to avoid memory leaks
 		CachedData.clearCache(userId)
+		CachedData._threadsPendingPlayerDataLoad[userId] = nil
 	end
 end
 

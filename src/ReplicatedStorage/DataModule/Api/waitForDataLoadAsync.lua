@@ -8,11 +8,11 @@ local function waitForDataLoadAsync(CachedData)
 		player: The player to check if data has loaded for
 	]]
 	return function(player: Player)
-		CachedData._threadsPendingPlayerDataLoad[player] = CachedData._threadsPendingPlayerDataLoad[player]
+		CachedData._threadsPendingPlayerDataLoad[player.UserId] = CachedData._threadsPendingPlayerDataLoad[player.UserId]
 			or {}
 
 		-- We'll store the thread and resume it in _resumeThreadsPendingLoad when the data loads
-		table.insert(CachedData._threadsPendingPlayerDataLoad[player], coroutine.running())
+		table.insert(CachedData._threadsPendingPlayerDataLoad[player.UserId], coroutine.running())
 
 		coroutine.yield()
 	end
