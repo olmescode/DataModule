@@ -4,7 +4,7 @@ DataModule is a versatile and efficient Roblox Library that provides a central p
 ## Features
 The DataModule library offers a number of key features, including:
 
-* Easy-to-use, clear and modular API for data storage and retrieval.
+* Easy-to-use, clear, and modular API for data storage and retrieval.
 * Server and client APIs for setting, retrieving, updating, and deleting data.
 * Efficient data caching, with the library storing data in memory for quick access.
 * Guaranteed consistency between server and client data.
@@ -104,3 +104,4 @@ The DataModule Library offers callbacks to handle the changes made in the cache 
 Please note that the DataModule library will only persist data changes made through the `setData`, `updateData`, and `deleteData` methods when called from the server. These changes will be saved in the designated DataStore.
 
 ## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
