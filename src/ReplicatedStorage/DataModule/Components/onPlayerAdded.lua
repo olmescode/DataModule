@@ -5,6 +5,8 @@ local DataModule = script:FindFirstAncestor("DataModule")
 
 local DataManger = require(DataModule.Modules.DataManger)
 local resumeThreadsPendingLoad = require(DataModule.Modules.resumeThreadsPendingLoad)
+local setPlayerDataAsErrored = require(DataModule.Modules.setPlayerDataAsErrored)
+local PlayerDataErrorType = require(DataModule.PlayerDataErrorType)
 
 local remotes = DataModule.Remotes
 
@@ -37,7 +39,10 @@ local function onPlayerAdded(CachedData, serverConfig)
 			return
 		end
 		
+		local hasErrored = false
+		local errorType = PlayerDataErrorType.DataStoreError
 		local player = Players:GetPlayerByUserId(userId)
+		
 		local success, playerData = pcall(function()
 			-- Get Global DataStore
 			local dataStore = DataStoreService:GetDataStore(dataStore)
@@ -64,7 +69,13 @@ local function onPlayerAdded(CachedData, serverConfig)
 				.. "'Studio Access to API Services'"
 
 			warn(warning)
+			
+			hasErrored = true
 			remotes.LoadData:FireClient(player, dataStore, {})
+		end
+		
+		if hasErrored then
+			setPlayerDataAsErrored(CachedData)(player, errorType)
 		end
 		
 		-- Resume any threads that were yielded by PlayerDataServer.waitForDataLoadAsync

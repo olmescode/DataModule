@@ -1,8 +1,11 @@
+export type PlayerData = { [string]: any }
+
 local CachedData = {}
 
 function CachedData.init()
-	CachedData.data = {}
-	CachedData._threadsPendingPlayerDataLoad = {}
+	CachedData.data = {} :: { [string]: PlayerData }
+	CachedData._threadsPendingPlayerDataLoad = {} :: { [string]: { thread } }
+	CachedData._playerDataLoadErrors = {} :: { [string]: string }
 end
 
 --[[

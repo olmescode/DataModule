@@ -40,12 +40,12 @@ local DataModule = {
 	updateData = updateData(CachedData, serverConfig),
 	deleteData = deleteData(CachedData, serverConfig),
 	
-	isLoadingData = isLoadingData,
-	
 	-- Callbacks
 	onUpdateData = callbacks.updateDataCallback.setCallback,
 	onSetData = callbacks.setDataCallback.setCallback,
 	onDeleteData = callbacks.deleteDataCallvack.setCallback,
+	
+	isLoadingData = isLoadingData,
 
 	--[[
 		Fires when the value of a specific data in the cache is changed
