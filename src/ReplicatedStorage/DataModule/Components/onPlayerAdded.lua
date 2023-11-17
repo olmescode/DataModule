@@ -4,7 +4,7 @@ local DataStoreService = game:GetService("DataStoreService")
 local DataModule = script:FindFirstAncestor("DataModule")
 
 local DataManger = require(DataModule.Modules.DataManger)
-local state = require(DataModule.state)
+local resumeThreadsPendingLoad = require(DataModule.Modules.resumeThreadsPendingLoad)
 
 local remotes = DataModule.Remotes
 
@@ -37,12 +37,6 @@ local function onPlayerAdded(CachedData, serverConfig)
 			return
 		end
 		
-		if state.LoadingData then
-			warn("Data is already loading")
-			return
-		end
-		state.LoadingData = true
-		
 		local player = Players:GetPlayerByUserId(userId)
 		local success, playerData = pcall(function()
 			-- Get Global DataStore
@@ -73,7 +67,8 @@ local function onPlayerAdded(CachedData, serverConfig)
 			remotes.LoadData:FireClient(player, dataStore, {})
 		end
 		
-		state.LoadingData = false
+		-- Resume any threads that were yielded by PlayerDataServer.waitForDataLoadAsync
+		resumeThreadsPendingLoad(CachedData)(player)
 	end
 end
 
