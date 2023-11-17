@@ -2,6 +2,7 @@ local CachedData = {}
 
 function CachedData.init()
 	CachedData.data = {}
+	CachedData._threadsPendingPlayerDataLoad = {}
 end
 
 --[[
