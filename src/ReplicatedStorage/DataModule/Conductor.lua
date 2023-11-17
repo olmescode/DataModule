@@ -1,6 +1,8 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
+type PlayerData = { [string]: any }
+
 local Conductor = {}
 
 local DataModule = script:FindFirstAncestor("DataModule")
@@ -15,24 +17,25 @@ Conductor.LoadData = DataModule.Remotes.LoadData
 Conductor.UpdateData = DataModule.Remotes.UpdateData
 Conductor.SetData = DataModule.Remotes.SetData
 Conductor.DeleteData = DataModule.Remotes.DeleteData
+Conductor.IsLoadingData = DataModule.Remotes.IsLoadingData
 
 -- Function to handle the LoadData event
-Conductor.handleLoadData = function(dataStore, playerData)
-	DataModuleAPI.loadDataAsync(dataStore, player.UserId, playerData)
+Conductor.handleLoadData = function(dataStoreName: string, data: PlayerData)
+	DataModuleAPI.loadDataAsync(dataStoreName, player.UserId, data)
 end
 
 -- Function to handle the UpdateData event
-Conductor.handleUpdateData = function(dataKey, dataValue)
+Conductor.handleUpdateData = function(dataKey: string, dataValue: any)
 	DataModuleAPI.updateData(player.UserId, dataKey, dataValue)
 end
 
 -- Function to handle the SetData event
-Conductor.handleSetData = function(dataStore, dataKey, dataValue)
-	DataModuleAPI.setData(player.UserId, dataStore, dataKey, dataValue)
+Conductor.handleSetData = function(dataStoreName: string, dataKey: string, dataValue: any)
+	DataModuleAPI.setData(player.UserId, dataStoreName, dataKey, dataValue)
 end
 
 -- Function to handle the DeleteData event
-Conductor.handleDeleteData = function(dataKey)
+Conductor.handleDeleteData = function(dataKey: string)
 	DataModuleAPI.deleteData(player.UserId, dataKey)
 end
 
