@@ -11,7 +11,7 @@ local function onPlayerRemoved(CachedData)
 		Parameters:
 		player: The player to save data for and clean up resources for
 	]]
-	return function(userId, resetOnPlayerRemoving)
+	return function(userId: number, resetOnPlayerRemoving: boolean?)
 		local playerData = CachedData._playerData[userId]
 		
 		if playerData then

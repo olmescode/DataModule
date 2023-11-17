@@ -10,6 +10,8 @@ local PlayerDataErrorType = require(DataModule.PlayerDataErrorType)
 
 local remotes = DataModule.Remotes
 
+export type PlayerData = { [string]: any }
+
 local function setExtraPlayerData(playerData, defaultData)
 	for dataStoreKey, dataStoreValue in pairs(defaultData) do
 		if not playerData[dataStoreKey] then
@@ -30,11 +32,11 @@ local function onPlayerAdded(CachedData, serverConfig)
 		userId: The player userId
 		data: Additional data to load
 	]]
-	return function(dataStore, userId, data)
+	return function(dataStoreName: string, userId: number, data: PlayerData)
 		if not serverConfig then
 			-- Store the player data in CachedData
 			CachedData._playerData[userId] = CachedData._playerData[userId] or {}
-			CachedData._playerData[userId][dataStore] = data
+			CachedData._playerData[userId][dataStoreName] = data
 			return
 		end
 		
@@ -44,7 +46,7 @@ local function onPlayerAdded(CachedData, serverConfig)
 		
 		local success, playerData = pcall(function()
 			-- Get Global DataStore
-			local dataStore = DataStoreService:GetDataStore(dataStore)
+			local dataStore = DataStoreService:GetDataStore(dataStoreName)
 			return DataManger.loadDataAsync(dataStore, userId)
 		end)
 		
@@ -56,10 +58,10 @@ local function onPlayerAdded(CachedData, serverConfig)
 			
 			-- Store the player data in CachedData
 			CachedData._playerData[userId] = CachedData._playerData[userId] or {}
-			CachedData._playerData[userId][dataStore] = playerData
+			CachedData._playerData[userId][dataStoreName] = playerData
 			
 			-- Send the player data to the client
-			remotes.LoadData:FireClient(player, dataStore, playerData)
+			remotes.LoadData:FireClient(player, dataStoreName, playerData)
 		else
 			local warning = "There was an error getting the data for the "
 				.. "player with UserId: "
@@ -70,7 +72,7 @@ local function onPlayerAdded(CachedData, serverConfig)
 			warn(warning)
 			
 			hasErrored = true
-			remotes.LoadData:FireClient(player, dataStore, {})
+			remotes.LoadData:FireClient(player, dataStoreName, {})
 		end
 		
 		if hasErrored then
