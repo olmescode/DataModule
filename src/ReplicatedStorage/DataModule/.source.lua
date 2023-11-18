@@ -51,6 +51,9 @@ local DataModule = {
 	onUpdateData = callbacks.updateDataCallback.setCallback,
 	onSetData = callbacks.setDataCallback.setCallback,
 	onDeleteData = callbacks.deleteDataCallvack.setCallback,
+	
+	-- Events
+	loadedData = script.Remotes.LoadedData.Event,
 
 	--[[
 		Fires when the value of a specific data in the cache is changed

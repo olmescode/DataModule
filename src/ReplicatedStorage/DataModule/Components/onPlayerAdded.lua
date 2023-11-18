@@ -39,6 +39,9 @@ local function onPlayerAdded(CachedData, serverConfig)
 			CachedData._playerData[userId][dataStoreName] = data
 			
 			CachedData._playerDataLoadErrors[userId] = errorType
+			
+			-- After loading data
+			remotes.LoadedData:Fire(errorType)
 			return
 		end
 		
