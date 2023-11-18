@@ -15,7 +15,8 @@ local callbacks = require(script.callbacks)
 local isLoadingData = require(script.Api.isLoadingData)
 local waitForDataLoadAsync = require(script.Api.waitForDataLoadAsync)
 local hasLoaded = require(script.Api.hasLoaded)
-local hasErrored = require(script.Api.hasErrored)
+local hasLoadingErrored = require(script.Api.hasLoadingErrored)
+local getLoadError = require(script.Api.getLoadError)
 
 local serverConfig = nil
 if RunService:IsServer() then
@@ -45,7 +46,8 @@ local DataModule = {
 	updateData = updateData(CachedData, serverConfig),
 	deleteData = deleteData(CachedData, serverConfig),
 	hasLoaded = hasLoaded(CachedData),
-	hasErrored = hasErrored(CachedData),
+	getLoadError = getLoadError(CachedData),
+	hasLoadingErrored = hasLoadingErrored(CachedData),
 	
 	-- Callbacks
 	onUpdateData = callbacks.updateDataCallback.setCallback,

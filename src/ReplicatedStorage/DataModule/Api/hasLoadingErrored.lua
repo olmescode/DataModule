@@ -1,4 +1,4 @@
-local function hasErrored(CachedData)
+local function hasLoadingErrored(CachedData)
 	--[[
 		Returns true if PlayerDataServer was unable to load the player's 
 		data (typically due to a DataStoreService or session lock error)
@@ -11,4 +11,4 @@ local function hasErrored(CachedData)
 	end
 end
 
-return hasErrored
+return hasLoadingErrored
