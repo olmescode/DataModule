@@ -1,9 +1,12 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+-- Load the custom DataModule that handles player data
 local DataModule = require(ReplicatedStorage:WaitForChild("DataModule"))
+
 local AUTOSAVE_INTERVAL = 300 -- 5 minutes
 
+-- Example data structures for different DataStores
 local DataStores = {
 	ExampleDataStore5 = {
 		Playtime = 10,
@@ -26,11 +29,13 @@ local DataStores = {
 
 Players.PlayerAdded:Connect(function(player)
 	for dataStore, data in pairs(DataStores) do
+		-- Load initial data for the player from predefined DataStores
 		DataModule.loadDataAsync(dataStore, player.UserId, data)
 	end
 end)
 
 Players.PlayerRemoving:Connect(function(player)
+	-- Save the player's data when they leave
 	DataModule.saveDataAsync(player.UserId)
 end)
 
@@ -42,12 +47,13 @@ local function startAutosave()
 	task.spawn(function()
 		while true do
 			task.wait(AUTOSAVE_INTERVAL)
-
+			-- Trigger autosave for all players in the game
 			DataModule.autosaveData()
 		end
 	end)
 end
 
 game:BindToClose(function()
+	-- Trigger onServerShutdown function to handle server shutdown and save data
 	DataModule.onServerShutdown()
 end)
