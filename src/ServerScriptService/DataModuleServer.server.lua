@@ -28,11 +28,6 @@ Players.PlayerAdded:Connect(function(player)
 	for dataStore, data in pairs(DataStores) do
 		DataModule.loadDataAsync(dataStore, player.UserId, data)
 	end
-	
-	-- Yield until the Player's data has loaded.
-	if not DataModule.hasLoaded(player) then
-		DataModule.waitForDataLoadAsync(player)
-	end
 end)
 
 Players.PlayerRemoving:Connect(function(player)

@@ -4,6 +4,11 @@ local DataModule = require(ReplicatedStorage:WaitForChild("DataModule"))
 local ProxyPrompt  = game.Workspace.SpawnLocation.ProximityPrompt
 
 ProxyPrompt.Triggered:Connect(function(player)
+	-- Yield until the Player's data has loaded.
+	if not DataModule.hasLoaded(player) then
+		DataModule.waitForDataLoadAsync(player)
+	end
+	
 	-- Retrieve the current cash value for the player from the DataModule
 	local cash = DataModule.retrieveData(player.UserId, "Cash")
 	
