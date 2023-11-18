@@ -16,7 +16,6 @@ Conductor.LoadData = DataModule.Remotes.LoadData
 Conductor.UpdateData = DataModule.Remotes.UpdateData
 Conductor.SetData = DataModule.Remotes.SetData
 Conductor.DeleteData = DataModule.Remotes.DeleteData
-Conductor.IsLoadingData = DataModule.Remotes.IsLoadingData
 
 -- Function to handle the LoadData event
 Conductor.handleLoadData = function(dataStoreName: string, data: PlayerData, errorType: PlayerDataErrorType.EnumType?)
