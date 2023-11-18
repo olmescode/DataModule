@@ -15,23 +15,41 @@ The DataModule library offers a number of key features, including:
 ## Usage
 To use the DataModule library in your project, you need to require the DataModule script. This ModuleScript contains the main functionalities of the library, including the configuration, functions, server APIs, client APIs, and callbacks.
 
+**Before the first use for a given player, always ensure the data has loaded:**
+
+~~~
+-- Server:
+if not PlayerDataServer.hasLoaded(player) then
+    PlayerDataServer.waitForDataLoadAsync(player)
+end
+
+-- Client: 
+if not PlayerDataClient.hasLoaded() then
+    PlayerDataClient.loaded:Wait()
+end
+~~~
+
 ## Setting up
 ~~~
 local Players = game:GetService("Players")
-local ServerStorage = game:GetService("ServerStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local DataModule = require(ServerStorage:WaitForChild("DataModule"))
+-- Load the custom DataModule that handles player data
+local DataModule = require(ReplicatedStorage:WaitForChild("DataModule"))
+
 local AUTOSAVE_INTERVAL = 300 -- 5 minutes
 
+-- Example data structures for different DataStores
 local DataStores = {
-	ExampleDataStore = {
+	ExampleDataStore5 = {
 		Playtime = 10,
-		PlayerPoints = 0
+		Cash = 10,
+		HalloweenCandies = 0
 	},
-	ExampleDataStore2 = {
-		CurrentEvent = "HalloweenEvent",
+	ExampleDataStore6 = {
+		Event = "HalloweenEvent",
 		Banned = true,
-		ExampleInventory = {
+		Items = {
 			4343758,  -- ColdFyre Armor
 			28521575  -- Slime Shield
 		},
@@ -44,12 +62,14 @@ local DataStores = {
 
 Players.PlayerAdded:Connect(function(player)
 	for dataStore, data in pairs(DataStores) do
+		-- Load initial data for the player from predefined DataStores
 		DataModule.loadDataAsync(dataStore, player.UserId, data)
 	end
 end)
 
 Players.PlayerRemoving:Connect(function(player)
-	DataModule.saveDataAsync(player.UserId, DataModule.config.resetOnPlayerRemoving)
+	-- Save the player's data when they leave
+	DataModule.saveDataAsync(player.UserId)
 end)
 
 --[[
@@ -60,18 +80,20 @@ local function startAutosave()
 	task.spawn(function()
 		while true do
 			task.wait(AUTOSAVE_INTERVAL)
-
+			-- Trigger autosave for all players in the game
 			DataModule.autosaveData()
 		end
 	end)
 end
 
 game:BindToClose(function()
+	-- Trigger onServerShutdown function to handle server shutdown and save data
 	DataModule.onServerShutdown()
 end)
 
 startAutosave()
 ~~~
+
 ## API Documentation
 
 ### Configurations
@@ -91,6 +113,14 @@ startAutosave()
 * `retrieveData(userId, dataKey)`: allows the server and client to retrieve data from the cache of a specific player
 * `updateData(userId, dataKey)`: allows the server and client to update the data in the cache of a specific player
 * `deleteData(userId, dataKey)`: allows the server and client to delete the data in the cache of a specific player
+
+### New APIs
+* `isLoadingData(player)`: Returns true if the server is currently loading the player's data
+* `waitForDataLoadAsync(player)`: Yields until the player's data has loaded.
+* `hasLoaded(player)`: Returns true if the server has finished loading the player's data.
+* `hasLoadingErrored(player)`: Returns true if PlayerDataServer was unable to load the player's data.
+* `getLoadError(player)`: Returns the error type encountered while loading.
+* `loadedData`: A new Event that fires when the player's data has finished loading.
 
 ## Callbacks
 The DataModule Library offers callbacks to handle the changes made in the cache and DataStore. These callbacks are available for the update, set, and delete operations.
