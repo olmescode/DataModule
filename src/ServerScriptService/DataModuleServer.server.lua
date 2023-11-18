@@ -57,3 +57,5 @@ game:BindToClose(function()
 	-- Trigger onServerShutdown function to handle server shutdown and save data
 	DataModule.onServerShutdown()
 end)
+
+startAutosave()
