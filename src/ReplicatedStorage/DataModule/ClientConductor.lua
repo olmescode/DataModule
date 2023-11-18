@@ -46,23 +46,12 @@ return function(stubs)
 		error("Conductor has already been called")
 		return
 	end
-	
-	-- Used for testing only
-	if stubs then
-		for i, v in pairs(stubs) do
-			Conductor[i] = v
-		end
-	end
 
 	-- Connect events
 	Conductor.LoadData.OnClientEvent:Connect(Conductor.handleLoadData)
 	Conductor.UpdateData.OnClientEvent:Connect(Conductor.handleUpdateData)
 	Conductor.SetData.OnClientEvent:Connect(Conductor.handleSetData)
 	Conductor.DeleteData.OnClientEvent:Connect(Conductor.handleDeleteData)
-	
-	-- Is Loading Data: Lets people know if SSF is loading a data
-	Conductor.handleIsLoadingData = Conductor.IsLoadingDataModule
-	Conductor.IsLoadingData.OnInvoke = Conductor.handleIsLoadingData
 
 	hasBeenCalled = true
 	script:SetAttribute(enums.Attribute.FrameworkReady, true)
