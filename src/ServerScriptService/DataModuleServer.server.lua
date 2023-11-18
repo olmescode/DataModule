@@ -7,6 +7,7 @@ local AUTOSAVE_INTERVAL = 300 -- 5 minutes
 local DataStores = {
 	ExampleDataStore5 = {
 		Playtime = 10,
+		Cash = 10,
 		HalloweenCandies = 0
 	},
 	ExampleDataStore6 = {
@@ -28,6 +29,7 @@ Players.PlayerAdded:Connect(function(player)
 		DataModule.loadDataAsync(dataStore, player.UserId, data)
 	end
 	
+	-- Yield until the Player's data has loaded.
 	if not DataModule.hasLoaded(player) then
 		DataModule.waitForDataLoadAsync(player)
 	end
