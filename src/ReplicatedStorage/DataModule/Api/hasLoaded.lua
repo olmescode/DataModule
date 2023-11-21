@@ -9,7 +9,7 @@ local function hasLoaded(CachedData)
 		player: The player to check if data has loaded for
 	]]
 	return function(player: Player)
-		local hasData = CachedData._playerData[player.UserId] and true or false
+		local hasData = CachedData._playerData[player] and true or false
 
 		return hasData
 	end

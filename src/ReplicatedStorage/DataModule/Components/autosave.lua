@@ -3,6 +3,7 @@ local DataStoreService = game:GetService("DataStoreService")
 
 local DataModule = script:FindFirstAncestor("DataModule")
 local DataManger = require(DataModule.Modules.DataManger)
+local getDatastoreKeyForPlayer = require(DataModule.Modules.getDatastoreKeyForPlayer)
 
 local function autosave(CachedData)
 	--[[
@@ -11,18 +12,19 @@ local function autosave(CachedData)
 	]]
 	return function()
 		for _, player in ipairs(Players:GetPlayers()) do
-			local playerData = CachedData._playerData[player.UserId]
+			local playerData = CachedData._playerData[player]
 			
 			if playerData then
 				for dataStore, data in pairs(playerData) do
 					local success, errorMessage = pcall(function()
 						-- Get Global DataStore
+						local key = getDatastoreKeyForPlayer(player)
 						local dataStore = DataStoreService:GetDataStore(dataStore)
-						return DataManger.updateDataAsync(dataStore, player.UserId, data)
+						return DataManger.updateDataAsync(dataStore, key, data)
 					end)
 
 					if not success then
-						warn(string.format("Failed to save %d's data: %s", player.UserId, errorMessage))
+						warn(string.format("Failed to save %d's data: %s", player, errorMessage))
 					end
 				end
 			end

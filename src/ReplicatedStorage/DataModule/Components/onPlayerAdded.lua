@@ -7,6 +7,7 @@ local DataManger = require(DataModule.Modules.DataManger)
 local resumeThreadsPendingLoad = require(DataModule.Modules.resumeThreadsPendingLoad)
 local setPlayerDataAsErrored = require(DataModule.Modules.setPlayerDataAsErrored)
 local PlayerDataErrorType = require(DataModule.PlayerDataErrorType)
+local getDatastoreKeyForPlayer = require(DataModule.Modules.getDatastoreKeyForPlayer)
 
 local remotes = DataModule.Remotes
 
@@ -29,16 +30,16 @@ local function onPlayerAdded(CachedData, serverConfig)
 
 		Parameters:
 		dataStore: The DataStore to retrieve data from
-		userId: The player userId
+		player: The player to retrieve data for
 		data: Additional data to load
 	]]
-	return function(dataStoreName: string, userId: number, data: PlayerData, errorType: PlayerDataErrorType.EnumType?)
+	return function(dataStoreName: string, player: Player, data: PlayerData, errorType: PlayerDataErrorType.EnumType?)
 		if not serverConfig then
 			-- Store the player's data in CachedData on the client
-			CachedData._playerData[userId] = CachedData._playerData[userId] or {}
-			CachedData._playerData[userId][dataStoreName] = data
+			CachedData._playerData[player] = CachedData._playerData[player] or {}
+			CachedData._playerData[player][dataStoreName] = data
 			
-			CachedData._playerDataLoadErrors[userId] = errorType
+			CachedData._playerDataLoadErrors[player] = errorType
 			
 			-- After loading data
 			remotes.LoadedData:Fire(errorType)
@@ -47,12 +48,12 @@ local function onPlayerAdded(CachedData, serverConfig)
 		
 		local hasErrored = false
 		local errorType = PlayerDataErrorType.DataStoreError
-		local player = Players:GetPlayerByUserId(userId)
 		
 		local success, playerData = pcall(function()
 			-- Get Global DataStore
+			local key = getDatastoreKeyForPlayer(player)
 			local dataStore = DataStoreService:GetDataStore(dataStoreName)
-			return DataManger.loadDataAsync(dataStore, userId)
+			return DataManger.loadDataAsync(dataStore, key)
 		end)
 		
 		if success then
@@ -62,15 +63,15 @@ local function onPlayerAdded(CachedData, serverConfig)
 			playerData = setExtraPlayerData(playerData, data)
 			
 			-- Store the player data in CachedData
-			CachedData._playerData[userId] = CachedData._playerData[userId] or {}
-			CachedData._playerData[userId][dataStoreName] = playerData
+			CachedData._playerData[player] = CachedData._playerData[player] or {}
+			CachedData._playerData[player][dataStoreName] = playerData
 			
 			-- Send the player data to the client
 			remotes.LoadData:FireClient(player, dataStoreName, playerData)
 		else
 			local warning = "There was an error getting the data for the "
-				.. "player with UserId: "
-				.. userId
+				.. "player: "
+				.. player.Name
 				.. ".\n\nIf you are running in Studio, make sure is enabled "
 				.. "'Studio Access to API Services'"
 

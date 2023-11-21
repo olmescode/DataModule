@@ -30,13 +30,13 @@ local DataStores = {
 Players.PlayerAdded:Connect(function(player)
 	for dataStore, data in pairs(DataStores) do
 		-- Load initial data for the player from predefined DataStores
-		DataModule.loadDataAsync(dataStore, player.UserId, data)
+		DataModule.loadDataAsync(dataStore, player, data)
 	end
 end)
 
 Players.PlayerRemoving:Connect(function(player)
 	-- Save the player's data when they leave
-	DataModule.saveDataAsync(player.UserId)
+	DataModule.saveDataAsync(player)
 end)
 
 --[[

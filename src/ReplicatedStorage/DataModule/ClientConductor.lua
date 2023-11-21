@@ -19,22 +19,22 @@ Conductor.DeleteData = DataModule.Remotes.DeleteData
 
 -- Function to handle the LoadData event
 Conductor.handleLoadData = function(dataStoreName: string, data: PlayerData, errorType: PlayerDataErrorType.EnumType?)
-	DataModuleAPI.loadDataAsync(dataStoreName, player.UserId, data, errorType)
+	DataModuleAPI.loadDataAsync(dataStoreName, player, data, errorType)
 end
 
 -- Function to handle the UpdateData event
-Conductor.handleUpdateData = function(dataKey: string, dataValue: any)
-	DataModuleAPI.updateData(player.UserId, dataKey, dataValue)
+Conductor.handleUpdateData = function(valueName: string, value: any)
+	DataModuleAPI.updateData(player, valueName, value)
 end
 
 -- Function to handle the SetData event
-Conductor.handleSetData = function(dataStoreName: string, dataKey: string, dataValue: any)
-	DataModuleAPI.setData(player.UserId, dataStoreName, dataKey, dataValue)
+Conductor.handleSetData = function(dataStoreName: string, valueName: string, value: any)
+	DataModuleAPI.setData(player, dataStoreName, valueName, value)
 end
 
 -- Function to handle the DeleteData event
-Conductor.handleDeleteData = function(dataKey: string)
-	DataModuleAPI.deleteData(player.UserId, dataKey)
+Conductor.handleDeleteData = function(valueName: string)
+	DataModuleAPI.deleteData(player, valueName)
 end
 
 

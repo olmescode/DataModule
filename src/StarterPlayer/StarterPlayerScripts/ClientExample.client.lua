@@ -17,16 +17,21 @@ if not DataModule.hasLoaded(player) then
 end
 
 local function updateTextLabel(value)
-	textLabel.Text = value
+	if DataModule.hasLoadingErrored(player) then
+		local errorType = DataModule.getLoadError(player)
+		print(errorType)
+	else
+		textLabel.Text = value
+	end
 end
 
--- Register a callback for updates to the "Playtime" data
-DataModule.onUpdate("Cash", function(userId, dataKey, dataValue)
-	print(string.format("You got +%d! %s for player %s has been updated", dataValue, dataKey, userId))
+-- Register a callback for updates to the "Cash" data
+DataModule.onUpdate("Cash", function(player, valueName, value)
+	print(string.format("Hey, player %s just got a Cash update! New value: %s", player.Name, value))
 
-	updateTextLabel(dataValue)
+	updateTextLabel(value)
 end)
 
 -- Retrieve the current cash value for the player from the DataModule
-local initialCash = DataModule.retrieveData(player.UserId, "Cash")
+local initialCash = DataModule.retrieveData(player, "Cash")
 updateTextLabel(initialCash) -- Update the TextLabel with the initial value

@@ -40,3 +40,6 @@ luac.out
 *.hex
 *.rbxl
 *.rbxm
+
+# Files and directories
+assets/
