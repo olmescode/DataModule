@@ -100,19 +100,19 @@ startAutosave()
 * `config`: A module that holds the server configurations.
 
 ### API Functions
-* `loadDataAsync(dataStore, userId, data)`: loads the data of a player when they join the game
-* `saveDataAsync(userId, resetOnPlayerRemoving)`: saves the data of a player when they leave the game
+* `loadDataAsync(dataStore, player, data)`: loads the data of a player when they join the game
+* `saveDataAsync(player, resetOnPlayerRemoving)`: saves the data of a player when they leave the game
 * `onServerShutdown()`: saves the data of all players when the server shuts down
 * `autosaveData()`: saves the data of all players periodically
 
 ### Server APIs
-* `saveData(userId, dataKey)`: A function that saves the data of a specific player
+* `saveData(player, valueName)`: A function that saves the data of a specific player
 
 ### Server and Client APIs
-* `setData(userId, dataStore, dataKey, dataValue)`: allows the server and client to set new data in the cache for a specific player
-* `retrieveData(userId, dataKey)`: allows the server and client to retrieve data from the cache of a specific player
-* `updateData(userId, dataKey)`: allows the server and client to update the data in the cache of a specific player
-* `deleteData(userId, dataKey)`: allows the server and client to delete the data in the cache of a specific player
+* `setData(player, dataStore, valueName, value)`: allows the server and client to set new data in the cache for a specific player
+* `retrieveData(player, valueName)`: allows the server and client to retrieve data from the cache of a specific player
+* `updateData(player, valueName, value)`: allows the server and client to update the data in the cache of a specific player
+* `deleteData(player, valueName)`: allows the server and client to delete the data in the cache of a specific player
 
 ### New APIs
 * `isLoadingData(player)`: Returns true if the server is currently loading the player's data
