@@ -6,7 +6,7 @@ local function isLoadingData(CachedData)
 		player: The player to check if data has loaded for
 	]]
 	return function(player: Player)
-		local threadsPendingLoad = CachedData._threadsPendingPlayerDataLoad[player.UserId]
+		local threadsPendingLoad = CachedData._threadsPendingPlayerDataLoad[player]
 
 		if threadsPendingLoad then
 			return true

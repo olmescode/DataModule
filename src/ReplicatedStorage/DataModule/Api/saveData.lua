@@ -2,6 +2,7 @@ local DataStoreService = game:GetService("DataStoreService")
 
 local DataModule = script:FindFirstAncestor("DataModule")
 local DataManger = require(DataModule.Modules.DataManger)
+local getDatastoreKeyForPlayer = require(DataModule.Modules.getDatastoreKeyForPlayer)
 
 local function saveData(CachedData)
 	--[[
@@ -9,37 +10,38 @@ local function saveData(CachedData)
 		associated with them
 
 		Parameters:
-		player: The player to save data for and clean up resources for
-		dataKey: The name of the instance in the cache
+		player: The player to save data for
+		valueName: The name of the instance in the cache
 	]]
-	return function(userId, dataKey)
-		assert(type(userId) == "number", "userId should be a number")
-		assert(type(dataKey) == "string", "data key should be a string")
+	return function(player: Player, valueName: string)
+		assert(player:IsA("Player"), "player should be a player")
+		assert(type(valueName) == "string", "valueName should be a string")
 		
-		local playerData = CachedData._playerData[userId]
+		local playerData = CachedData._playerData[player]
 		
 		if not playerData then
-			warn(string.format("User with ID %d not found in cached data", userId))
+			warn(string.format("Player %s not found in cached data", player.Name))
 			return
 		end
 
 		for dataStore, data in pairs(playerData) do
-			if data[dataKey] then
+			if data[valueName] then
 				local success, errorMessage = pcall(function()
 					-- Get Global DataStore
+					local key = getDatastoreKeyForPlayer(player)
 					local dataStore = DataStoreService:GetDataStore(dataStore)
-					return DataManger.saveDataAsync(dataStore, userId, data)
+					return DataManger.saveDataAsync(dataStore, key, data)
 				end)
 
 				if not success then
-					warn(string.format("Failed to save %d's data: %s", userId, errorMessage))
+					warn(string.format("Failed to save %s's data: %s", player.Name, errorMessage))
 				end
 				return 
 			end
 		end
 		
 		-- Value not found in cache
-		warn(string.format("Key %s does not exist in the data for user %d", dataKey, userId))
+		warn(string.format("Value %s does not exist in the data for the player %s", valueName, player.Name))
 		return false
 	end
 end

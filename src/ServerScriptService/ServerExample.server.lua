@@ -10,20 +10,21 @@ ProxyPrompt.Triggered:Connect(function(player)
 	end
 	
 	-- Retrieve the current cash value for the player from the DataModule
-	local cash = DataModule.retrieveData(player.UserId, "Cash")
+	local cash = DataModule.retrieveData(player, "Cash")
 	
 	cash = cash + 10
 	
 	-- Update the cash value in the DataModule for the player
-	DataModule.updateData(player.UserId, "Cash", cash)
+	DataModule.updateData(player, "Cash", cash)
 end)
 
 -- Register a callback for updates to the "Cash" data specifically
-DataModule.onUpdate("Cash", function(userId, dataKey, dataValue)
-	print("Cash for player " .. userId .. " has been updated to " .. dataValue)
+DataModule.onUpdate("Cash", function(player, valueName, value)
+	print("Hey, got some cash for player", player, ":", valueName, "updated to", value)
+
 end)
 
 -- Register a general callback for any updates to player data
-DataModule.onUpdateData(function(userId, dataKey, dataValue)
-	print("Data has been update for user", userId, dataKey, dataValue)
+DataModule.onUpdateData(function(player, valueName, value)
+	print("Data has been update for player", player, valueName, value)
 end)

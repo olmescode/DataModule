@@ -10,7 +10,7 @@ local function getLoadError(CachedData)
 		player: The player to check if data has loaded for
 	]]
 	return function(player: Player)
-		return CachedData._playerDataLoadErrors[player.UserId] :: PlayerDataErrorType.EnumType?
+		return CachedData._playerDataLoadErrors[player] :: PlayerDataErrorType.EnumType?
 	end
 end
 

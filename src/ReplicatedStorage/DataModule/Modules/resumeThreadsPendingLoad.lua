@@ -6,8 +6,8 @@ local function resumeThreadsPendingLoad(CachedData)
 		player: The player to check if data has loaded for
 	]]
 	return function(player: Player)
-		if CachedData._threadsPendingPlayerDataLoad[player.UserId] then
-			for _, thread in ipairs(CachedData._threadsPendingPlayerDataLoad[player.UserId]) do
+		if CachedData._threadsPendingPlayerDataLoad[player] then
+			for _, thread in ipairs(CachedData._threadsPendingPlayerDataLoad[player]) do
 				task.spawn(thread)
 			end
 		end

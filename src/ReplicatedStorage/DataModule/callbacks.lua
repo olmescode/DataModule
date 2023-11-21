@@ -10,10 +10,11 @@ local callbacks = {
 	Fires when the value of a specific instance is changed
 
 	Parameters:
-	dataKey: The name of the instance in the cache
+	valueName: The name of the instance in the cache
+	callback: The function to be added as a callback
 ]]
-function callbacks.addCallback(dataKey, callback)
-	callbacks[dataKey] = callback
+function callbacks.addCallback(valueName: string, callback: any)
+	callbacks[valueName] = callback
 end
 
 return callbacks

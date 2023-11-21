@@ -8,7 +8,7 @@ local function setPlayerDataAsErrored(CachedData)
 		errorType: 
 	]]
 	return function(player: Player, errorType: string)
-		CachedData._playerDataLoadErrors[player.UserId] = errorType
+		CachedData._playerDataLoadErrors[player] = errorType
 	end
 end
 

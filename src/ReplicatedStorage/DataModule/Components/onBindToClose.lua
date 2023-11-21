@@ -3,18 +3,20 @@ local DataStoreService = game:GetService("DataStoreService")
 
 local DataModule = script:FindFirstAncestor("DataModule")
 local DataManger = require(DataModule.Modules.DataManger)
+local getDatastoreKeyForPlayer = require(DataModule.Modules.getDatastoreKeyForPlayer)
 
-local function savePlayerDataAsync(userId, playerData)
+local function savePlayerDataAsync(player, playerData)
 	for dataStore, data in pairs(playerData) do
 		-- Get Global DataStore
+		local key = getDatastoreKeyForPlayer(player)
 		local dataStore = DataStoreService:GetDataStore(dataStore)
-		return DataManger.updateDataAsync(dataStore, userId, data)
+		return DataManger.updateDataAsync(dataStore, key, data)
 	end
 end
 
 local function onBindToClose(CachedData)
 	--[[
-		Iterates through each userId and playerData in the CachedData of players
+		Iterates through each player and playerData in the CachedData of players
 		still in the game and save player data in a parallel manner which can
 		improve the performance and speed of the save operation
 		
@@ -32,11 +34,11 @@ local function onBindToClose(CachedData)
 		local numThreadsRunning = 0
 		
 		-- A coroutine that wraps the `savePlayerDataAsync` to call on a new thread
-		local startSaveThread = coroutine.wrap(function(userId, playerData)
+		local startSaveThread = coroutine.wrap(function(player, playerData)
 			-- Perform the save operation
-			local success, errorMessage = pcall(savePlayerDataAsync, userId, playerData)
+			local success, errorMessage = pcall(savePlayerDataAsync, player, playerData)
 			if not success then
-				warn(string.format("Failed to save %d's data: %s", userId, errorMessage))
+				warn(string.format("Failed to save %d's data: %s", player, errorMessage))
 			end
 
 			numThreadsRunning -= 1
@@ -46,11 +48,11 @@ local function onBindToClose(CachedData)
 			end
 		end)
 
-		for userId, playerData in pairs(CachedData) do
+		for player, playerData in pairs(CachedData) do
 			numThreadsRunning += 1
 			-- This loop finishes running and counting numThreadsRunning before any of
 			-- the save threads start because coroutine.wrap has built-in deferral on start
-			startSaveThread(userId, playerData)
+			startSaveThread(player, playerData)
 		end
 		
 		-- Stall shutdown until save threads finish
